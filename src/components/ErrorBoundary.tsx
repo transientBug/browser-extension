@@ -1,11 +1,14 @@
 import React, { Component } from "react";
 
-const ErrorMessage = ({ error }: { error: any }) => (
-  <h1>Something went wrong :( {error.message}</h1>
-);
+import Alert from "./Alert";
+
+type State = {
+  hasError: boolean;
+  error: any;
+};
 
 class ErrorBoundary extends Component {
-  state = { hasError: false, error: null };
+  state: State = { hasError: false, error: null };
 
   static getDerivedStateFromError(error: any) {
     return { hasError: true, error };
@@ -19,7 +22,18 @@ class ErrorBoundary extends Component {
     const { children } = this.props;
     const { hasError, error } = this.state;
 
-    return <>{hasError ? <ErrorMessage error={error} /> : children}</>;
+    if (!hasError) return children;
+
+    const { message = "Unknown error" } = error;
+
+    return (
+      <Alert color="red">
+        {{
+          title: "Uh oh",
+          message: `Thaaaat's not gone well - ${message}`
+        }}
+      </Alert>
+    );
   }
 }
 

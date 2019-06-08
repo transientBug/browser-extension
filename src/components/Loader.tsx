@@ -2,7 +2,7 @@ import React from "react";
 
 import tw from "tailwind.macro";
 import styled from "@emotion/styled/macro";
-import { keyframes } from "emotion/macro";
+import { keyframes } from "@emotion/core";
 
 const DotContainer = styled.div`
   width: 3em;
