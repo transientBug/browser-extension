@@ -1,12 +1,34 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import * as serviceWorker from './serviceWorker';
+import React, { lazy, Suspense } from "react";
+import ReactDOM from "react-dom";
 
-ReactDOM.render(<App />, document.getElementById('root'));
+// Base tailwind styles
+import "./index.css";
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();
+import ErrorBoundary from "./components/ErrorBoundary";
+import Loader from "./components/Loader";
+
+const root = document.getElementById("root");
+
+// TODO: Background does not need to be a react page since it'll never be seen
+const Components: { [keys: string]: React.LazyExoticComponent<any> } = {
+  "#background": lazy(() => import("./pages/Background")),
+  "#options": lazy(() => import("./pages/Options")),
+  "#popup": lazy(() => import("./pages/Popup"))
+};
+
+const {
+  location: { hash }
+} = window;
+
+const Component = Components[hash];
+if (!Component)
+  throw new Error(`Something went terribly wrong! No page found for #{ hash }`);
+
+ReactDOM.render(
+  <ErrorBoundary>
+    <Suspense fallback={Loader}>
+      <Component />
+    </Suspense>
+  </ErrorBoundary>,
+  root
+);

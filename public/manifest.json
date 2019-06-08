@@ -1,15 +1,38 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
-  "icons": [
-    {
-      "src": "favicon.ico",
-      "sizes": "64x64 32x32 24x24 16x16",
-      "type": "image/x-icon"
+  "manifest_version": 2,
+
+  "name": "transientBug",
+  "version": "2.1.0",
+  "description": "Allows for quick bookmarking of websites in transientBug",
+  "homepage_url": "https://github.com/transientBug/firefox-extension",
+
+  "icons": {
+    "48": "icons/bug_logo.png"
+  },
+
+  "permissions": ["activeTab", "storage", "identity"],
+
+  "page_action": {
+    "show_matches": ["*://*/*"],
+    "hide_matches": ["*://*.transientbug.ninja/*", "*://localhost/*"],
+    "default_icon": "icons/ic_bookmark_border_black_24dp_2x.png",
+    "default_title": "Save to transientBug",
+    "default_popup": "index.html#popup"
+  },
+
+  "options_ui": {
+    "browser_style": true,
+    "page": "index.html#options"
+  },
+
+  "background": {
+    "page": "index.html#background"
+  },
+
+  "applications": {
+    "gecko": {
+      "id": "firefox@transientbug.ninja",
+      "strict_min_version": "57.0"
     }
-  ],
-  "start_url": ".",
-  "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  }
 }
