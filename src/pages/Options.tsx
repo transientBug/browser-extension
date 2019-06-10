@@ -1,12 +1,9 @@
 /* global browser */
 
-import React, { useEffect, useContext } from "react";
+import React, { useContext } from "react";
 
 import tw from "tailwind.macro";
 import styled from "@emotion/styled/macro";
-
-import { Store, useDispatch, useState } from "../ducks/store";
-import { reducer, state, operations } from "../ducks/options";
 
 import debugFactory from "../debug";
 import AuthenticationForm from "../components/AuthenticationForm";
@@ -32,17 +29,20 @@ const Options: React.FC = () => {
   const settings = useContext(BrowserSettingsContext);
   const updater = useContext(BrowserSettingsUpdateContext);
 
+  const login = () => browser.runtime.sendMessage({ action: "login" });
+  const logout = () => updater({ accessToken: "" });
+
   return (
     <Wrapper>
       <AuthenticationForm
         accessToken={settings.accessToken}
-        onLogout={() => updater({ accessToken: "" })}
-        onLogin={() => browser.runtime.sendMessage({ action: "login" })}
+        onLogout={logout}
+        onLogin={login}
       />
 
       <BuildInfo temporaryInstall={settings.temporaryInstall} />
 
-      {DEBUGABLE && <DevOptionsForm />}
+      {DEBUGABLE && <DevOptionsForm settings={settings} update={updater} />}
     </Wrapper>
   );
 };

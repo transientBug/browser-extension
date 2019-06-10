@@ -5,12 +5,10 @@ import styled from "@emotion/styled/macro";
 import { css } from "emotion/macro";
 
 import Alert from "./Alert";
+import { Settings, SettingsUpdater } from "./BrowserSettingsProvider";
 
-declare module "debug" {
-  interface Debug {
-    instances: any;
-  }
-}
+import debugFactory from "../debug";
+const debug = debugFactory.extend("components").extend("DevOptionsForm");
 
 type DebugData = {
   namespace: string;
@@ -62,7 +60,15 @@ const Legend = styled.legend`
   ${tw`block text-gray-700 text-sm font-bold mb-2`}
 `;
 
-const DevOptionsForm = () => (
+type DevOptionsFormProps = {
+  settings: Settings;
+  update: SettingsUpdater;
+};
+
+const DevOptionsForm: React.FC<DevOptionsFormProps> = ({
+  settings,
+  update
+}) => (
   <Form>
     <H2>Development Settings</H2>
 
@@ -85,7 +91,7 @@ const DevOptionsForm = () => (
     <Fieldset>
       <Legend>Debug Settings</Legend>
 
-      {debugInstances.map((instance: any, idx: number) => (
+      {debugInstances.map((instance: DebugData, idx: number) => (
         <>
           <label
             className={css`
@@ -98,8 +104,14 @@ const DevOptionsForm = () => (
                 ${tw`mr-2 leading-tight`}
               `}
               type="checkbox"
-              checked={false}
-              onChange={() => {}}
+              checked={
+                settings.debugFilter
+                  ? settings.debugFilter.includes(instance.debugFlag)
+                  : false
+              }
+              onChange={e => {
+                debug("setting", instance.namespace, e);
+              }}
             />
             <span
               className={css`

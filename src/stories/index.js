@@ -88,4 +88,6 @@ storiesOf("BuildInfo")
   .add("default", () => <BuildInfo />)
   .add("temporary install", () => <BuildInfo temporaryInstall={true} />);
 
-storiesOf("DevOptionsForm").add("default", () => <DevOptionsForm />);
+storiesOf("DevOptionsForm").add("default", () => (
+  <DevOptionsForm settings={{}} update={action("update!")} />
+));

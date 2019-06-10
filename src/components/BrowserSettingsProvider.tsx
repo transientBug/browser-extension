@@ -9,18 +9,20 @@ const debug: debug.IDebugger = debugFactory
 
 export type Settings = {
   accessToken?: string;
-  debugFilter?: string;
+  debugFilter?: string[];
   temporaryInstall?: boolean;
 };
 
-type StorageSetter = (keys: browser.storage.StorageObject) => Promise<void>;
+export type SettingsUpdater = (
+  keys: browser.storage.StorageObject
+) => Promise<void>;
 
 const BrowserSettingsContext = createContext<Settings>({});
-const BrowserSettingsUpdateContext = createContext<StorageSetter>(() =>
+const BrowserSettingsUpdateContext = createContext<SettingsUpdater>(() =>
   Promise.resolve()
 );
 
-type useBrowserSettings = () => [Settings, StorageSetter];
+type useBrowserSettings = () => [Settings, SettingsUpdater];
 
 const useBrowserSettings: useBrowserSettings = () => {
   const [allData, setAllData] = useState<Settings>({});
@@ -53,7 +55,7 @@ const useBrowserSettings: useBrowserSettings = () => {
     };
   }, []);
 
-  const updater: StorageSetter = useCallback(
+  const updater: SettingsUpdater = useCallback(
     async keys => await browser.storage.local.set(keys),
     []
   );
