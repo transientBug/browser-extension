@@ -7,6 +7,9 @@ import Loader from "../components/Loader";
 import CenteredContent from "../components/CenteredContent";
 import PopupContainer from "../components/PopupContainer";
 
+import debugFactory from "../debug";
+const debug: debug.IDebugger = debugFactory.extend("page").extend("Popup");
+
 const Popup: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
 

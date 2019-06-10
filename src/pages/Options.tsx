@@ -1,6 +1,6 @@
 /* global browser */
 
-import React, { useEffect } from "react";
+import React, { useEffect, useContext } from "react";
 
 import tw from "tailwind.macro";
 import styled from "@emotion/styled/macro";
@@ -15,37 +15,32 @@ import BuildInfo from "../components/BuildInfo";
 
 import "./Background";
 import "./Popup";
+import BrowserSettingsProvider, {
+  BrowserSettingsContext,
+  BrowserSettingsUpdateContext
+} from "../components/BrowserSettingsProvider";
 
 const DEBUGABLE = process.env.REACT_APP_DEBUGABLE;
 
-const debug = debugFactory.extend("page").extend("Options");
+const debug = debugFactory.extend("pages").extend("Options");
 
 const Wrapper = styled.div`
   ${tw`w-full bg-white shadow-md rounded px-8 pt-6 pb-8`}
 `;
 
 const Options: React.FC = () => {
-  const state = useState();
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    (async () => {
-      const settings = await browser.storage.local.get();
-
-      dispatch(operations.initSettings(settings));
-    })();
-  });
+  const settings = useContext(BrowserSettingsContext);
+  const updater = useContext(BrowserSettingsUpdateContext);
 
   return (
     <Wrapper>
       <AuthenticationForm
-        accessToken={state.accessToken}
-        onLogout={() =>
-          dispatch(operations.changeSettings({ accessToken: "" }))
-        }
+        accessToken={settings.accessToken}
+        onLogout={() => updater({ accessToken: "" })}
+        onLogin={() => browser.runtime.sendMessage({ action: "login" })}
       />
 
-      <BuildInfo temporaryInstall={state.temporaryInstall} />
+      <BuildInfo temporaryInstall={settings.temporaryInstall} />
 
       {DEBUGABLE && <DevOptionsForm />}
     </Wrapper>
@@ -54,9 +49,9 @@ const Options: React.FC = () => {
 
 const OptionsPage: React.FC = () => {
   return (
-    <Store reducer={reducer} initialState={state}>
+    <BrowserSettingsProvider>
       <Options />
-    </Store>
+    </BrowserSettingsProvider>
   );
 };
 

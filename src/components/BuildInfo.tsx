@@ -3,22 +3,15 @@ import React from "react";
 import { version as VERSION } from "../../package.json";
 import Alert from "./Alert";
 
-const DEBUGABLE = process.env.REACT_APP_DEBUGABLE;
 const ENV = process.env.NODE_ENV;
 
 type BuildInfoProps = { temporaryInstall?: boolean };
 
 const BuildInfo: React.FC<BuildInfoProps> = ({ temporaryInstall = false }) => (
   <>
-    {DEBUGABLE && (
-      <Alert>
-        {{
-          title: "Debugable",
-          message:
-            "This build has the debug package enabled and will log debug statements to the console."
-        }}
-      </Alert>
-    )}
+    <small>
+      <b>Build:</b> {ENV}@{VERSION}
+    </small>
 
     {temporaryInstall && (
       <Alert color="yellow">
@@ -29,10 +22,6 @@ const BuildInfo: React.FC<BuildInfoProps> = ({ temporaryInstall = false }) => (
         }}
       </Alert>
     )}
-
-    <small>
-      <b>Build:</b> {ENV}@{VERSION}
-    </small>
   </>
 );
 

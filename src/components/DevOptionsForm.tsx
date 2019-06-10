@@ -4,13 +4,51 @@ import tw from "tailwind.macro";
 import styled from "@emotion/styled/macro";
 import { css } from "emotion/macro";
 
-import debug from "debug";
+import Alert from "./Alert";
 
 declare module "debug" {
   interface Debug {
     instances: any;
   }
 }
+
+type DebugData = {
+  namespace: string;
+  description: React.ReactNode;
+  debugFlag: string;
+};
+
+const debugInstances: DebugData[] = [
+  {
+    namespace: "Background Page",
+    description: `Includes login and background saving functionality along with post-install setup.`,
+    debugFlag: "transientBug:pages:Background*"
+  },
+  {
+    namespace: "Options Page",
+    description: `Includes fetching and modifying extension settings and auth functionality (login/logout)`,
+    debugFlag: "transientBug:pages:Options*"
+  },
+  {
+    namespace: "Pop-up",
+    description: `Includes the page action button and popup, the main functionality of the extension.`,
+    debugFlag: "transientBug:pages:Popup*"
+  },
+  {
+    namespace: "transientBug",
+    description: (
+      <p>
+        Enables <b>ALL</b> debug logging in the extension. This can be noisy and
+        should be used as a last resort.
+      </p>
+    ),
+    debugFlag: "transientBug*"
+  }
+];
+
+const H2 = styled.h2`
+  ${tw`block text-gray-700 text-xl3 font-bold mb-2`}
+`;
 
 const Form = styled.form`
   ${tw`mb-4`}
@@ -26,30 +64,53 @@ const Legend = styled.legend`
 
 const DevOptionsForm = () => (
   <Form>
+    <H2>Development Settings</H2>
+
+    <Alert>
+      {{
+        title: "Development Build",
+        message: `This build has debugging and development tools and settings enabled. Please tread carefully.`
+      }}
+    </Alert>
+
+    <Fieldset>
+      <Legend>Endpoint</Legend>
+
+      <p>
+        Here should be a list of endpoints (staging and prod, along with local)
+        and the option to input a custom endpoint and client id.
+      </p>
+    </Fieldset>
+
     <Fieldset>
       <Legend>Debug Settings</Legend>
 
-      {debug.instances.map((instance: any, idx: number) => (
-        <label
-          className={css`
-            ${tw`md:w-2/3 block text-gray-500 font-bold`}
-          `}
-          key={idx}
-        >
-          <input
+      {debugInstances.map((instance: any, idx: number) => (
+        <>
+          <label
             className={css`
-              ${tw`mr-2 leading-tight`}
+              ${tw`md:w-2/3 block font-bold`}
             `}
-            type="checkbox"
-          />
-          <span
-            className={css`
-              ${tw`text-sm`}
-            `}
+            key={idx}
           >
-            {instance.namespace}
-          </span>
-        </label>
+            <input
+              className={css`
+                ${tw`mr-2 leading-tight`}
+              `}
+              type="checkbox"
+              checked={false}
+              onChange={() => {}}
+            />
+            <span
+              className={css`
+                ${tw`text-sm`}
+              `}
+            >
+              {instance.namespace}
+            </span>
+          </label>
+          {instance.description}
+        </>
       ))}
     </Fieldset>
   </Form>
