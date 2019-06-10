@@ -110,7 +110,23 @@ const DevOptionsForm: React.FC<DevOptionsFormProps> = ({
                   : false
               }
               onChange={e => {
-                debug("setting", instance.namespace, e);
+                debug("setting", instance.namespace, e.target.checked);
+
+                if (e.target.checked) {
+                  const debugFilter = (settings.debugFilter || []).concat([
+                    instance.debugFlag
+                  ]);
+
+                  update({ debugFilter });
+                } else {
+                  const debugFilter = [...(settings.debugFilter || [])];
+                  debugFilter.splice(
+                    debugFilter.indexOf(instance.debugFlag),
+                    1
+                  );
+
+                  update({ debugFilter });
+                }
               }}
             />
             <span
