@@ -11,6 +11,8 @@ export type Settings = {
   accessToken?: string;
   debugFilter?: string[];
   temporaryInstall?: boolean;
+  endpoint?: string;
+  clientId?: string;
 };
 
 export type SettingsUpdater = (

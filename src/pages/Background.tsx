@@ -48,7 +48,11 @@ async function setupDevListener() {
 async function afterInstall(details: any) {
   debug("installed", details);
 
-  await browser.storage.local.set({ temporaryInstall: details.temporary });
+  await browser.storage.local.set({
+    temporaryInstall: details.temporary,
+    endpoint: "",
+    clientID: ""
+  });
   debugFactoryOG.disable();
 
   if (!debugable) return;
@@ -58,6 +62,12 @@ async function afterInstall(details: any) {
 
 browser.runtime.onInstalled.addListener(afterInstall);
 
+/**
+ * Helper util to extract the access token from the redirected url
+ *
+ * @param redirectUri The url which the oauth endpoint redirected too, with the
+ * full access code in the query string
+ */
 function extractAcccessToken(redirectUri: string) {
   debug("access token extraction start", redirectUri);
 
@@ -73,6 +83,12 @@ function extractAcccessToken(redirectUri: string) {
   return params.get("access_token");
 }
 
+/**
+ * Kicks off the OAuth flow
+ *
+ * @param endpoint
+ * @param clientId
+ */
 async function login(endpoint?: string, clientId?: string) {
   debug("oauth start");
 
