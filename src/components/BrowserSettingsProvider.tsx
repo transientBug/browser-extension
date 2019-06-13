@@ -13,6 +13,7 @@ export type Settings = {
   temporaryInstall?: boolean;
   endpoint?: string;
   clientId?: string;
+  tags?: string[];
 };
 
 export type SettingsUpdater = (

@@ -2,7 +2,7 @@ import tw from "tailwind.macro";
 import styled from "@emotion/styled/macro";
 
 const PopupContainer = styled.div`
-  ${tw`flex bg-gray-200`}
+  ${tw`flex flex-col bg-gray-200`}
 
   /**
    * Inline size works for the internationalization, where it'll be 700 wide in
