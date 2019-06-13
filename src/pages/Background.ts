@@ -28,12 +28,14 @@ async function setupDevListener() {
   ) => {
     if (areaName !== "local") return;
 
-    console.log({ changes });
+    if (!changes.debugFilter) return;
 
-    const { newValue: debugFilter } = changes;
+    const {
+      debugFilter: { newValue: newDebugFilter }
+    } = changes;
 
     debugFactoryOG.disable();
-    if (debugFilter !== "") debugFactoryOG.enable(debugFilter as string);
+    if (newDebugFilter !== "") debugFactoryOG.enable(newDebugFilter.join(","));
   };
 
   browser.storage.onChanged.addListener(onSettings);
