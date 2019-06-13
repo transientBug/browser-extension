@@ -1,7 +1,5 @@
 /* global browser */
 
-import React from "react";
-
 import debugFactoryOG from "debug";
 import debugFactory from "../debug";
 const debug: debug.IDebugger = debugFactory.extend("page").extend("Background");
@@ -30,6 +28,8 @@ async function setupDevListener() {
   ) => {
     if (areaName !== "local") return;
 
+    console.log({ changes });
+
     const { newValue: debugFilter } = changes;
 
     debugFactoryOG.disable();
@@ -46,21 +46,18 @@ async function setupDevListener() {
  * I am lazy
  */
 async function afterInstall(details: any) {
-  debug("installed", details);
-
   await browser.storage.local.set({
-    temporaryInstall: details.temporary,
-    endpoint: "",
-    clientID: ""
+    temporaryInstall: details.temporary
   });
+
   debugFactoryOG.disable();
 
   if (!debugable) return;
 
   await setupDevListener();
-}
 
-browser.runtime.onInstalled.addListener(afterInstall);
+  debug("installed", details);
+}
 
 /**
  * Helper util to extract the access token from the redirected url
@@ -89,8 +86,13 @@ function extractAcccessToken(redirectUri: string) {
  * @param endpoint
  * @param clientId
  */
-async function login(endpoint?: string, clientId?: string) {
+async function login() {
   debug("oauth start");
+
+  const { endpoint, clientId } = await browser.storage.local.get([
+    "endpoint",
+    "clientId"
+  ]);
 
   const redirectionUrl = encodeURIComponent(browser.identity.getRedirectURL());
   const oauthEndpoint = `${endpoint}/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectionUrl}&response_type=token`;
@@ -131,10 +133,9 @@ function onMessageHandler(message: any) {
   }
 }
 
-browser.runtime.onMessage.addListener(onMessageHandler);
-
-const Background: React.FC = () => {
-  return <div className="background" />;
+const Background = () => {
+  browser.runtime.onInstalled.addListener(afterInstall);
+  browser.runtime.onMessage.addListener(onMessageHandler);
 };
 
 export default Background;
