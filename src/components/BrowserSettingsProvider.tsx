@@ -17,7 +17,7 @@ export type Settings = {
 
 export type SettingsUpdater = (
   keys: browser.storage.StorageObject
-) => Promise<void>;
+) => void | Promise<void>;
 
 const BrowserSettingsContext = createContext<Settings>({});
 const BrowserSettingsUpdateContext = createContext<SettingsUpdater>(() =>
@@ -29,38 +29,38 @@ type useBrowserSettings = () => [Settings, SettingsUpdater];
 const useBrowserSettings: useBrowserSettings = () => {
   const [allData, setAllData] = useState<Settings>({});
 
-  const onSettingsChange = (
-    changes: browser.storage.ChangeDict,
-    areaName: browser.storage.StorageName
-  ) => {
-    if (areaName !== "local") return;
+  const updater: SettingsUpdater = keys => browser.storage.local.set(keys);
 
-    debug("settings changed", changes);
+  const onSettingsChange = useCallback(
+    (
+      changes: browser.storage.ChangeDict,
+      areaName: browser.storage.StorageName
+    ) => {
+      if (areaName !== "local") return;
 
-    const data = Object.entries(changes).reduce(
-      (memo, [key, value]) => ({ ...memo, [key]: value.newValue }),
-      {}
-    );
+      debug("settings changed", changes);
 
-    setAllData(data);
-  };
+      const data = Object.entries(changes).reduce(
+        (memo, [key, value]) => ({ ...memo, [key]: value.newValue }),
+        {}
+      );
+
+      setAllData({ ...allData, ...data });
+    },
+    [allData]
+  );
 
   useEffect(() => {
-    (async () => {
-      setAllData(await browser.storage.local.get());
-    })();
-
     browser.storage.onChanged.addListener(onSettingsChange);
 
     return () => {
       browser.storage.onChanged.removeListener(onSettingsChange);
     };
-  }, []);
+  }, [allData]);
 
-  const updater: SettingsUpdater = useCallback(
-    async keys => await browser.storage.local.set(keys),
-    []
-  );
+  useEffect(() => {
+    (async () => setAllData(await browser.storage.local.get()))();
+  }, []);
 
   return [allData, updater];
 };
