@@ -1,4 +1,4 @@
-import { take, uniq, flatten } from "lodash";
+/* global browser */
 
 import debugFactory from "./debug";
 const debug: debug.IDebugger = debugFactory.extend("bookmarks");
@@ -12,20 +12,24 @@ export interface Bookmark {
   [keys: string]: any;
 }
 
-const logout = () => {
-  browser.storage.local.set({ accessToken: "" });
-};
+class APIError extends Error {
+  constructor(...args: any[]) {
+    super(...args);
 
-const updateCachedTags = async (newTags?: string[]) => {
-  const { tags }: { tags?: string[] } = await browser.storage.local.get("tags");
+    Error.captureStackTrace(this, APIError);
+  }
+}
 
-  const mergedTags = (newTags || []).concat(tags || []);
-  const allNewTags = take(uniq(flatten(mergedTags)), 200);
+class AuthError extends Error {
+  constructor(...args: any[]) {
+    super(...args);
 
-  await browser.storage.local.set({ tags: allNewTags });
-};
+    Error.captureStackTrace(this, AuthError);
+  }
+}
 
-async function save(bookmark: Partial<Bookmark>): Promise<Bookmark | void> {
+async function save(bookmark: Partial<Bookmark>): Promise<Bookmark> {
+  // TODO: refactor out the need for browser here
   const { endpoint, accessToken } = await browser.storage.local.get([
     "endpoint",
     "accessToken"
@@ -60,7 +64,7 @@ async function save(bookmark: Partial<Bookmark>): Promise<Bookmark | void> {
 
   debug("response", response);
 
-  if (response.status === 401) return logout();
+  if (response.status === 401) throw new AuthError(`Extension unauthorized`);
 
   if (!response.ok)
     throw new TypeError(
@@ -71,9 +75,8 @@ async function save(bookmark: Partial<Bookmark>): Promise<Bookmark | void> {
     data: { attributes }
   } = await response.json();
 
-  updateCachedTags(attributes.tags);
-
   return attributes;
 }
 
 export default { save };
+export { APIError, AuthError };
