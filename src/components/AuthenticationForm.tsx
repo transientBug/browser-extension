@@ -21,11 +21,11 @@ const P = styled.p`
   ${tw`my-1`}
 `;
 
-type AuthenticatonFormProps = {
+interface AuthenticatonFormProps {
   accessToken?: string;
   onLogout?: any;
   onLogin?: any;
-};
+}
 
 const AuthenticationForm: React.FC<AuthenticatonFormProps> = ({
   accessToken,
@@ -59,7 +59,6 @@ const AuthenticationForm: React.FC<AuthenticatonFormProps> = ({
       {accessToken && (
         <>
           <P>You're currently logged in!</P>
-          <pre>{accessToken}</pre>
           <Button onClick={onLogout}>Log out</Button>
         </>
       )}

@@ -5,7 +5,9 @@ import Alert from "./Alert";
 
 const ENV = process.env.NODE_ENV;
 
-type BuildInfoProps = { temporaryInstall?: boolean };
+interface BuildInfoProps {
+  temporaryInstall?: boolean;
+}
 
 const BuildInfo: React.FC<BuildInfoProps> = ({ temporaryInstall = false }) => (
   <>
