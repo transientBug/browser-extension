@@ -67,6 +67,7 @@ const upsertBookmark = async () => {
 
 const mergeTags = (existingTags?: string[], newTags?: string[]) => {
   const mergedTags = (existingTags || []).concat(newTags || []);
+
   return take(uniq(flatten(mergedTags)), 200);
 };
 
@@ -118,7 +119,13 @@ const Popup: React.FC = () => {
       ) : (
         <>
           {!authed && <UnauthedView onLogin={login} />}
-          {bookmarkData && <BookmarkEditView bookmark={bookmarkData} />}
+          {bookmarkData && (
+            <BookmarkEditView
+              autocompleteTags={settings.tags || []}
+              bookmark={bookmarkData}
+              onSave={console.log}
+            />
+          )}
         </>
       )}
     </PopupContainer>

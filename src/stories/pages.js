@@ -1,9 +1,19 @@
 import React from "react";
 
 import { storiesOf } from "@storybook/react";
-// import { action } from "@storybook/addon-actions";
+import { action } from "@storybook/addon-actions";
 // import { linkTo } from "@storybook/addon-links";
 
-import Popup from "../pages/Popup";
+import PopupContainer from "../components/PopupContainer";
 
-storiesOf("Popup").add("default", () => <Popup />);
+import BookmarkEditView from "../pages/Popup/BookmarkEditView";
+
+storiesOf("Popup").add("BookmarkEditView", () => (
+  <PopupContainer>
+    <BookmarkEditView
+      bookmark={{}}
+      autocompleteTags={["test"]}
+      onSave={action("save!")}
+    />
+  </PopupContainer>
+));

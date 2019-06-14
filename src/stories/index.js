@@ -6,6 +6,8 @@ import { storiesOf } from "@storybook/react";
 import { action } from "@storybook/addon-actions";
 // import { linkTo } from "@storybook/addon-links";
 
+import "./pages";
+
 import Loader from "../components/Loader";
 import Alert from "../components/Alert";
 import ErrorBoundary from "../components/ErrorBoundary";
