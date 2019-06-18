@@ -5,7 +5,7 @@ import React, { useContext } from "react";
 import tw from "tailwind.macro";
 import styled from "@emotion/styled/macro";
 
-import debugFactory from "../debug";
+// import debugFactory from "../debug";
 import AuthenticationForm from "../components/AuthenticationForm";
 import DevOptionsForm from "../components/DevOptionsForm";
 import BuildInfo from "../components/BuildInfo";
@@ -19,7 +19,7 @@ import BrowserSettingsProvider, {
 
 const DEBUGABLE = process.env.REACT_APP_DEBUGABLE;
 
-const debug = debugFactory.extend("pages").extend("Options");
+// const debug = debugFactory.extend("pages").extend("Options");
 
 const Wrapper = styled.div`
   ${tw`w-full bg-white shadow-md rounded px-8 pt-6 pb-8`}

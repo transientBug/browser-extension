@@ -57,7 +57,7 @@ const useBrowserSettings: useBrowserSettings = () => {
     return () => {
       browser.storage.onChanged.removeListener(onSettingsChange);
     };
-  }, [allData]);
+  }, [allData, onSettingsChange]);
 
   useEffect(() => {
     (async () => setAllData(await browser.storage.local.get()))();

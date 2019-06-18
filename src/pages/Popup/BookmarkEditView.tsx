@@ -17,12 +17,12 @@ const Fieldset = styled.fieldset`
 
 // const Legend = styled.legend``;
 
-const Label = styled.label`
-  ${tw`mb-2 uppercase font-bold text-lg text-grey-darkest`}
-`;
+// const Label = styled.label`
+//   ${tw`mb-2 uppercase font-bold text-lg text-grey-darkest`}
+// `;
 
 const Input = styled.input`
-  ${tw`appearance-none block w-full bg-white text-gray-700 border border-gray-400 rounded py-2 px-2 mb-2 leading-tight focus:outline-none focus:border-blue-600 focus:border-1`}
+  ${tw`appearance-none block w-full bg-white text-gray-700 border border-gray-400 rounded py-2 px-2 leading-tight focus:outline-none focus:border-blue-600 focus:border-1`}
 `;
 
 type onSave = (bookmark: Partial<Bookmark>) => void;

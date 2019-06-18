@@ -8,6 +8,7 @@ import LoadingView from "./Popup/LoadingView";
 import UnauthedView from "./Popup/UnauthedView";
 import BookmarkEditView from "./Popup/BookmarkEditView";
 
+import Navbar from "../components/Navbar";
 import PopupContainer from "../components/PopupContainer";
 import { useBrowserSettings } from "../components/BrowserSettingsProvider";
 
@@ -110,7 +111,7 @@ const Popup: React.FC = () => {
         setIsLoading(false);
       }
     })();
-  }, [isInitialized]);
+  }, [isInitialized, authed, settings.tags, updateSettings]);
 
   return (
     <PopupContainer>
