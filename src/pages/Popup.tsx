@@ -119,6 +119,7 @@ const Popup: React.FC = () => {
         <LoadingView />
       ) : (
         <>
+          <Navbar />
           {!authed && <UnauthedView onLogin={login} />}
           {bookmarkData && (
             <BookmarkEditView
