@@ -23,9 +23,9 @@ debug("transientBug")
   .extend("Storybook")
   .extend("Test");
 
-storiesOf("Loader").add("default", () => <Loader />);
+storiesOf("Loader", module).add("default", () => <Loader />);
 
-storiesOf("Alert")
+storiesOf("Alert", module)
   .add("default", () => (
     <Alert>{{ title: "Ohia!", message: "This is a default alert" }}</Alert>
   ))
@@ -46,7 +46,7 @@ storiesOf("Alert")
     </Alert>
   ));
 
-storiesOf("CenteredContent").add("centered Loader", () => (
+storiesOf("CenteredContent", module).add("centered Loader", () => (
   <PopupContainer>
     <CenteredContent>
       <Loader />
@@ -58,7 +58,7 @@ const Errorable = () => {
   throw new Error("Uh oh!");
 };
 
-storiesOf("ErrorBoundary")
+storiesOf("ErrorBoundary", module)
   .add("with an error", () => (
     <ErrorBoundary>
       <Errorable />
@@ -70,11 +70,11 @@ storiesOf("ErrorBoundary")
     </ErrorBoundary>
   ));
 
-storiesOf("Button").add("default", () => (
+storiesOf("Button", module).add("default", () => (
   <Button onClick={action("clicked")}>Click me!</Button>
 ));
 
-storiesOf("AutheticationForm")
+storiesOf("AutheticationForm", module)
   .add("Unauthenticated", () => <AuthenticationForm />)
   .add("Authenticated", () => (
     <AuthenticationForm
@@ -86,10 +86,10 @@ storiesOf("AutheticationForm")
     />
   ));
 
-storiesOf("BuildInfo")
+storiesOf("BuildInfo", module)
   .add("default", () => <BuildInfo />)
   .add("temporary install", () => <BuildInfo temporaryInstall={true} />);
 
-storiesOf("DevOptionsForm").add("default", () => (
+storiesOf("DevOptionsForm", module).add("default", () => (
   <DevOptionsForm settings={{}} update={action("update!")} />
 ));

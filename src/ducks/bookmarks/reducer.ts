@@ -4,10 +4,10 @@ import { ActionPayloads } from "./actions";
 import { State } from "./state";
 
 const reducers: ReducerMap<State, ActionTypes, ActionPayloads> = {
-  [ActionTypes.InitSettings]: (draft, action) => {
+  [ActionTypes.StartSaving]: (draft, action) => {
     console.log({ draft, action });
   },
-  [ActionTypes.ChangeSettings]: (draft, action) => {
+  [ActionTypes.FinishSaving]: (draft, action) => {
     console.log({ action });
   }
 };

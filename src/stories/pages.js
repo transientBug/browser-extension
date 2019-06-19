@@ -9,7 +9,7 @@ import PopupContainer from "../components/PopupContainer";
 
 import BookmarkEditView from "../pages/Popup/BookmarkEditView";
 
-storiesOf("Popup").add("BookmarkEditView", () => (
+storiesOf("Popup", module).add("BookmarkEditView", () => (
   <PopupContainer>
     <Navbar />
     <BookmarkEditView

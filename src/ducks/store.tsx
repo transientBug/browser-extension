@@ -1,13 +1,13 @@
-import React, {
-  useCallback,
-  useReducer,
-  useContext,
-  createContext
-} from "react";
-import { useImmerReducer, ReducerMap } from "./reducer";
+import React, { useContext, createContext } from "react";
 
-const StateContext = createContext<any>({});
-const DispatchContext = createContext<React.Dispatch<any>>(() => {});
+import { useImmerReducer, ReducerMap, ThunkableDispatch } from "./reducer";
+import ActionTypes from "./bookmarks/types";
+import initialState, { State } from "./bookmarks/state";
+
+const StateContext = createContext<State>(initialState);
+const DispatchContext = createContext<ThunkableDispatch<ActionTypes, State>>(
+  () => {}
+);
 
 type StoreProps = {
   reducer: ReducerMap<any, any, any>;
@@ -35,4 +35,18 @@ const Store: React.FC<StoreProps> = ({
 const useDispatch = () => useContext(DispatchContext);
 const useState = () => useContext(StateContext);
 
-export { Store, useDispatch, useState, StateContext, DispatchContext };
+type useStore = () => [
+  ReturnType<typeof useState>,
+  ReturnType<typeof useDispatch>
+];
+
+const useStore: useStore = () => [useState(), useDispatch()];
+
+export {
+  Store,
+  useDispatch,
+  useState,
+  useStore,
+  StateContext,
+  DispatchContext
+};

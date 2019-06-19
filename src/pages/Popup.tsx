@@ -14,6 +14,9 @@ import { useBrowserSettings } from "../components/BrowserSettingsProvider";
 
 import Bookmarks, { Bookmark, AuthError } from "../bookmarks";
 
+import { Store, useStore } from "../ducks/store";
+import { reducer, initialState, operations } from "../ducks/bookmarks";
+
 import debugFactory from "../debug";
 const debug: debug.IDebugger = debugFactory.extend("page").extend("Popup");
 
@@ -53,84 +56,86 @@ const currentTab = async (): Promise<browser.tabs.Tab> => {
   return tabs[0];
 };
 
-const upsertBookmark = async () => {
-  const activeTab = await currentTab();
-
-  const localBookmark: Partial<Bookmark> = {
-    url: activeTab.url,
-    title: activeTab.title
-  };
-
-  debug("local bookmark", localBookmark);
-
-  return await Bookmarks.save(localBookmark);
-};
-
 const mergeTags = (existingTags?: string[], newTags?: string[]) => {
   const mergedTags = (existingTags || []).concat(newTags || []);
 
   return take(uniq(flatten(mergedTags)), 200);
 };
 
-const Popup: React.FC = () => {
-  const [settings, updateSettings] = useBrowserSettings();
+interface PopupContentsProps {
+  accessToken?: string;
+  tags?: string[];
+}
 
-  const [isLoading, setIsLoading] = useState(true);
-  const [isInitialized, setIsInitialized] = useState(false);
-
-  const [bookmarkData, setBookmarkData] = useState<Bookmark | undefined>();
-
-  const showLoader = isLoading || !isInitialized;
-  const authed = !!settings.accessToken;
+const PopupContents: React.FC<PopupContentsProps> = ({ tags }) => {
+  const [state, dispatch] = useStore();
 
   useEffect(() => {
-    const settingsFetched = !isEmpty(settings);
-
-    setIsInitialized(settingsFetched);
-  }, [settings]);
-
-  useEffect(() => {
-    if (!isInitialized) return;
-    if (!authed) return setIsLoading(false);
-
     (async () => {
-      try {
-        const res = await upsertBookmark();
+      const activeTab = await currentTab();
 
-        setBookmarkData(res);
+      const localBookmark: Partial<Bookmark> = {
+        url: activeTab.url,
+        title: activeTab.title
+      };
 
-        const tags = mergeTags(settings.tags, res.tags);
-        updateSettings({ tags });
-
-        changeIcon(BOOKMARK_ICON_FILL);
-      } catch (error) {
-        if (!(error instanceof AuthError)) throw error;
-
-        logout();
-      } finally {
-        setIsLoading(false);
-      }
+      dispatch(operations.save(localBookmark));
     })();
-  }, [isInitialized, authed, settings.tags, updateSettings]);
+  }, []);
+
+  // useEffect(() => {
+  //   if (!state.isLoading) return;
+  //   if (!authed) return setIsLoading(false);
+
+  //   (async () => {
+  //     try {
+  //       const res = await upsertBookmark();
+
+  //       setBookmarkData(res);
+
+  //       const tags = mergeTags(settings.tags, res.tags);
+  //       updateSettings({ tags });
+
+  //       changeIcon(BOOKMARK_ICON_FILL);
+  //     } catch (error) {
+  //       if (!(error instanceof AuthError)) throw error;
+
+  //       logout();
+  //     } finally {
+  //       setIsLoading(false);
+  //     }
+  //   })();
+  // }, [isInitialized, authed]); // eslint-disable-line
+
+  if (state.isLoading) return <LoadingView />;
 
   return (
-    <PopupContainer>
-      {showLoader ? (
-        <LoadingView />
-      ) : (
-        <>
-          <Navbar />
-          {!authed && <UnauthedView onLogin={login} />}
-          {bookmarkData && (
-            <BookmarkEditView
-              autocompleteTags={settings.tags || []}
-              bookmark={bookmarkData}
-              onSave={console.log}
-            />
-          )}
-        </>
+    <>
+      <Navbar onClick={() => {}} />
+      {state.bookmark && (
+        <BookmarkEditView
+          autocompleteTags={tags || []}
+          bookmark={state.bookmark}
+          onSave={console.log}
+        />
       )}
-    </PopupContainer>
+    </>
+  );
+};
+
+const Popup: React.FC = () => {
+  const [settings, , isInitialized] = useBrowserSettings();
+
+  const authed = !!settings.accessToken;
+
+  return (
+    <Store reducer={reducer} initialState={initialState}>
+      <PopupContainer>
+        {!authed && !isInitialized && <LoadingView />}
+        {!authed && isInitialized && <UnauthedView onLogin={login} />}
+        {authed && <PopupContents />}
+      </PopupContainer>
+    </Store>
   );
 };
 

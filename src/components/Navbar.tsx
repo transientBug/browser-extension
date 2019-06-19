@@ -48,7 +48,11 @@ const LinkIcon = tw(LinkSVG)`
   fill-current inline-block h-4 w-4
 `;
 
-const Navbar: React.FC = () => (
+interface NavbarProps {
+  onClick: any;
+}
+
+const Navbar: React.FC<NavbarProps> = ({ onClick }) => (
   <Nav>
     <NavHeader>
       <NavLogo src={logo} alt="transientBug logo" />
@@ -63,10 +67,10 @@ const Navbar: React.FC = () => (
         </NavLink> */}
       </NavLeft>
       <NavRight>
-        <NavButton color="red">
+        <NavButton onClick={() => onClick("save")} color="red">
           <SaveIcon />
         </NavButton>
-        <NavButton>
+        <NavButton onClick={() => onClick("open-tb")}>
           <LinkIcon />
         </NavButton>
       </NavRight>

@@ -25,10 +25,11 @@ const BrowserSettingsUpdateContext = createContext<SettingsUpdater>(() =>
   Promise.resolve()
 );
 
-type useBrowserSettings = () => [Settings, SettingsUpdater];
+type useBrowserSettings = () => [Settings, SettingsUpdater, boolean];
 
 const useBrowserSettings: useBrowserSettings = () => {
   const [allData, setAllData] = useState<Settings>({});
+  const [isInitialized, setIsInitialized] = useState(false);
 
   const updater: SettingsUpdater = keys => browser.storage.local.set(keys);
 
@@ -60,10 +61,14 @@ const useBrowserSettings: useBrowserSettings = () => {
   }, [allData, onSettingsChange]);
 
   useEffect(() => {
-    (async () => setAllData(await browser.storage.local.get()))();
+    (async () => {
+      setAllData(await browser.storage.local.get());
+
+      setIsInitialized(true);
+    })();
   }, []);
 
-  return [allData, updater];
+  return [allData, updater, isInitialized];
 };
 
 const BrowserSettingsProvider: React.FC = ({ children }) => {
