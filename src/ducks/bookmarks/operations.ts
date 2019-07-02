@@ -1,18 +1,16 @@
-import * as Actions from "./actions";
+import actions from "./actions";
 import { ThunkableDispatch } from "../reducer";
-import ActionTypes from "./types";
-import { State } from "./state";
 import { Bookmark } from "../../bookmarks";
 
 const save = (bookmarkData: Partial<Bookmark>) => async (
-  dispatch: ThunkableDispatch<ActionTypes, State>
+  dispatch: ThunkableDispatch<any>
 ) => {
-  dispatch(Actions.startSaving());
+  dispatch(actions.startSaving());
 
   const bookmark = await Promise.resolve(bookmarkData);
   // const bookmark = await Bookmarks.save(localBookmark)
 
-  dispatch(Actions.finishSaving(bookmark));
+  dispatch(actions.finishSaving(bookmark));
 };
 
 export { save };

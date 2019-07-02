@@ -1,12 +1,10 @@
+import { Bookmark } from "../../bookmarks";
+
 export interface State {
   isLoading: boolean;
   hasError?: boolean;
   errorDetails?: any;
-  bookmark?: {
-    title?: string;
-    tags?: string[];
-    description?: string;
-  };
+  bookmark?: Bookmark;
 }
 
 const initialState: State = {

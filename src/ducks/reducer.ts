@@ -1,63 +1,72 @@
-import produce, { Draft } from "immer";
 import { useReducer, useCallback } from "react";
-import { ActionPayloads } from "./bookmarks/actions";
+import produce, { Draft } from "immer";
 
-export type Reducer<State, Action> = (
-  draft: Draft<State> | State,
+export type ReducerMap<State, ActionMap> = {
+  [Key in keyof ActionMap]: (
+    draft: State | Draft<State>,
+    action: ActionMap[Key]
+  ) => State | void
+};
+
+type SingleActionReducer<State, Action> = (
+  draft: State | Draft<State>,
   action: Action
-) => void | State;
+) => Draft<State> | State | void;
 
-export type ReducerMap<
-  State,
-  ActionTypes extends string,
-  ActionPayloads extends { [K in ActionTypes]: ActionPayloads[K] }
-> = { readonly [TKey in ActionTypes]: Reducer<State, ActionPayloads[TKey]> };
+type ActionReducers<State, ActionPayloads> = (
+  state: State,
+  action: ActionPayloads
+) => State;
 
-export type ThunkDispatch<ActionTypes extends string, State> = (
-  dispatch: React.Dispatch<ActionPayloads[ActionTypes]>,
-  state?: State
+export type ThunkDispatch<S, T> = (
+  dispatch: React.Dispatch<T>,
+  state?: S
 ) => void | Promise<void>;
 
-export type ThunkableDispatch<
-  ActionTypes extends string,
-  State
-> = React.Dispatch<
-  ActionPayloads[ActionTypes] | ThunkDispatch<ActionTypes, State>
->;
+export type ThunkableDispatch<T> = React.Dispatch<T | ThunkDispatch<any, T>>;
 
-function isThunk(value: any): value is ThunkDispatch<any, any> {
+type BasePayload = { type: string };
+
+function isThunk<T>(value: any): value is ThunkDispatch<any, T> {
   return typeof value === "function";
 }
 
-export function useImmerReducer<
-  State,
-  ActionTypes extends string,
-  ActionPayloads extends { [K in ActionTypes]: ActionPayloads[K] }
->(
-  reducers: ReducerMap<State, ActionTypes, ActionPayloads>,
-  initialState: State,
-  initializer?: any
-): [State | void, ThunkableDispatch<ActionTypes, State>] {
-  const cachedReducer = useCallback(
-    produce(
-      (draft: Draft<State>, action: ActionPayloads[ActionTypes]): void => {
-        const reduce = reducers[action.type as ActionTypes];
+const useReducerMap = function<State, Payloads extends BasePayload>(
+  reducers: ReducerMap<State, any>,
+  initialState: State
+): [State, React.Dispatch<Payloads>] {
+  const reducer = useCallback<ActionReducers<State, Payloads>>(
+    (_state, action) => {
+      const actionReducer = reducers[action.type] as SingleActionReducer<
+        State,
+        typeof action
+      >;
 
-        if (reduce) reduce(draft, action);
-      }
-    ),
+      // yololth
+      return (produce(actionReducer) as unknown) as State;
+    },
     [reducers]
   );
 
-  const [state, dispatch] = useReducer<
-    Reducer<State, ActionPayloads[ActionTypes]>,
-    State
-  >(cachedReducer, initialState, initializer);
+  return useReducer<React.Reducer<State, Payloads>>(reducer, initialState);
+};
 
-  const thunker = (action: ThunkableDispatch<ActionTypes, State>) => {
-    if (isThunk(action)) action(dispatch, state);
-    else dispatch(action);
+const useImmerReducer = function<State, Payloads extends BasePayload>(
+  reducers: ReducerMap<State, any>,
+  initialState: State
+): [State, ThunkableDispatch<Payloads>] {
+  const [state, rawDispatch] = useReducerMap<State, Payloads>(
+    reducers,
+    initialState
+  );
+
+  const thunker: ThunkableDispatch<Payloads> = action => {
+    if (isThunk<Payloads>(action)) action(rawDispatch, state);
+    else rawDispatch(action);
   };
 
   return [state, thunker];
-}
+};
+
+export default useImmerReducer;
+export { useImmerReducer, useReducerMap };

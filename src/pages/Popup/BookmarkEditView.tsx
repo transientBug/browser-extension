@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import { uniq } from "lodash";
 
@@ -37,55 +37,77 @@ interface BookmarkProps {
   onSave: onSave;
 }
 
-const BookmarkEditView: React.FC<BookmarkProps> = ({
+const BookmarkEditForm: React.FC<BookmarkProps> = ({
   onSave,
   autocompleteTags,
   bookmark
-}) => (
-  <Form
-    onSubmit={(e: React.FormEvent) => {
-      e.preventDefault();
-      console.log(e);
-      debugger;
-      onSave({});
-    }}
-  >
-    <Fieldset>
-      <Input
-        type="text"
-        value={bookmark.title}
-        name="title"
-        placeholder="Title"
-        onChage={console.log}
-      />
-    </Fieldset>
+}) => {
+  const [formData, setFormData] = useState<Bookmark>(bookmark);
 
-    <Fieldset>
-      <CreatableSelect
-        isClearable
-        isMulti
-        name="tags"
-        placeholder="Tags"
-        options={uniq(
-          autocompleteTags
-            .concat(bookmark.tags || [])
-            .map(item => ({ label: item, value: item }))
-        )}
-        onChange={console.log}
-        styles={{
-          placeholder: base => ({ ...base, color: "#a8adb6" })
-        }}
-      />
-    </Fieldset>
+  const updateField = (fieldName: string, value: any) => setFormData({ ...formData, [fieldName]: value });
 
-    <Fieldset>
-      <Textarea
-        placeholder="Description"
-        rows={10}
-        value={bookmark.description}
-      />
-    </Fieldset>
-  </Form>
-);
+  const updateFieldHandler = (fieldName: string) => (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => updateField(fieldName, event.target.value)
 
-export default BookmarkEditView;
+  return (
+    <Form
+      onSubmit={(e: React.FormEvent) => {
+        e.preventDefault();
+        onSave(formData);
+      }}
+    >
+      <Fieldset>
+        <Input
+          type="text"
+          value={formData.title}
+          name="title"
+          placeholder="Title"
+          onChange={updateFieldHandler("title")}
+        />
+      </Fieldset>
+
+      <Fieldset>
+        <CreatableSelect
+          isClearable
+          isMulti
+          name="tags"
+          placeholder="Tags"
+          options={uniq(
+            autocompleteTags
+              .concat(bookmark.tags || [])
+              .map(item => ({ label: item, value: item }))
+          )}
+          onChange={value => {
+            if (!value) return
+
+            let newTags: string[] = []
+
+            if (Array.isArray(value))
+              newTags = newTags.concat(value.map(v => v.value))
+            else {
+              if(!value) return
+              newTags.push(value.value)
+            }
+
+            updateField('tags', formData.tags.concat(value.map(v => v.value)))
+          }
+          styles={{
+            placeholder: base => ({ ...base, color: "#a8adb6" })
+          }}
+        />
+      </Fieldset>
+
+      <Fieldset>
+        <Textarea
+          placeholder="Description"
+          rows={10}
+          value={formData.description}
+          onChange={updateFieldHandler('description')}
+        />
+      </Fieldset>
+    </Form>
+  );
+};
+
+export default BookmarkEditForm;

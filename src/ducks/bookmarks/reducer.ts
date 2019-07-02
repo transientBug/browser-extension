@@ -1,14 +1,15 @@
 import { ReducerMap } from "../reducer";
-import ActionTypes from "./types";
-import { ActionPayloads } from "./actions";
-import { State } from "./state";
 
-const reducers: ReducerMap<State, ActionTypes, ActionPayloads> = {
+import { Actions } from "./actions";
+import { State } from "./state";
+import ActionTypes from "./types";
+
+const reducers: ReducerMap<State, Actions> = {
   [ActionTypes.StartSaving]: (draft, action) => {
     console.log({ draft, action });
   },
   [ActionTypes.FinishSaving]: (draft, action) => {
-    console.log({ action });
+    console.log({ draft, action });
   }
 };
 

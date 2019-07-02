@@ -7,9 +7,10 @@ const startSaving = (message?: string) =>
 const finishSaving = (bookmark: Partial<Bookmark>) =>
   ({ type: ActionTypes.FinishSaving, payload: { bookmark } } as const);
 
-export { startSaving, finishSaving };
-
-export interface ActionPayloads {
-  [ActionTypes.StartSaving]: ReturnType<typeof startSaving>;
-  [ActionTypes.FinishSaving]: ReturnType<typeof finishSaving>;
+export interface Actions {
+  [ActionTypes.StartSaving]: typeof startSaving;
+  [ActionTypes.FinishSaving]: typeof finishSaving;
 }
+
+export type Payloads = ReturnType<Actions[ActionTypes]>;
+export default { startSaving, finishSaving };

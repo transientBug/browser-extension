@@ -6,7 +6,7 @@ import { take, uniq, flatten } from "lodash";
 
 import LoadingView from "./Popup/LoadingView";
 import UnauthedView from "./Popup/UnauthedView";
-import BookmarkEditView from "./Popup/BookmarkEditView";
+import BookmarkEditForm from "./Popup/BookmarkEditView";
 
 import Navbar from "../components/Navbar";
 import PopupContainer from "../components/PopupContainer";
@@ -14,8 +14,9 @@ import { useBrowserSettings } from "../components/BrowserSettingsProvider";
 
 import Bookmarks, { Bookmark, AuthError } from "../bookmarks";
 
-import { Store, useStore } from "../ducks/store";
+import makeStore from "../ducks/store";
 import { reducer, initialState, operations } from "../ducks/bookmarks";
+import { State } from "../ducks/bookmarks/state";
 
 import debugFactory from "../debug";
 const debug: debug.IDebugger = debugFactory.extend("page").extend("Popup");
@@ -67,6 +68,8 @@ interface PopupContentsProps {
   tags?: string[];
 }
 
+const { Store, useStore } = makeStore<State>(initialState);
+
 const PopupContents: React.FC<PopupContentsProps> = ({ tags }) => {
   const [state, dispatch] = useStore();
 
@@ -113,7 +116,7 @@ const PopupContents: React.FC<PopupContentsProps> = ({ tags }) => {
     <>
       <Navbar onClick={() => {}} />
       {state.bookmark && (
-        <BookmarkEditView
+        <BookmarkEditForm
           autocompleteTags={tags || []}
           bookmark={state.bookmark}
           onSave={console.log}

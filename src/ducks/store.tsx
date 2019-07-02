@@ -1,52 +1,50 @@
 import React, { useContext, createContext } from "react";
 
-import { useImmerReducer, ReducerMap, ThunkableDispatch } from "./reducer";
-import ActionTypes from "./bookmarks/types";
-import initialState, { State } from "./bookmarks/state";
+import { useImmerReducer, ThunkableDispatch } from "./reducer";
 
-const StateContext = createContext<State>(initialState);
-const DispatchContext = createContext<ThunkableDispatch<ActionTypes, State>>(
-  () => {}
-);
-
-type StoreProps = {
-  reducer: ReducerMap<any, any, any>;
-  initialState: any;
-  initState?: any;
+type StoreProps<State> = {
+  reducer: any;
+  initialState: State;
 };
 
-const Store: React.FC<StoreProps> = ({
-  reducer,
-  initialState,
-  initState,
-  children
-}) => {
-  const [state, dispatch] = useImmerReducer(reducer, initialState, initState);
+function makeStore<State>(initialState: State) {
+  const StateContext = createContext(initialState);
+  const DispatchContext = createContext<ThunkableDispatch<any>>(() => {});
 
-  return (
-    <StateContext.Provider value={state}>
-      <DispatchContext.Provider value={dispatch}>
-        {children}
-      </DispatchContext.Provider>
-    </StateContext.Provider>
-  );
-};
+  const useDispatch = () => useContext(DispatchContext);
+  const useState = () => useContext(StateContext);
 
-const useDispatch = () => useContext(DispatchContext);
-const useState = () => useContext(StateContext);
+  type useStore = () => [
+    ReturnType<typeof useState>,
+    ReturnType<typeof useDispatch>
+  ];
 
-type useStore = () => [
-  ReturnType<typeof useState>,
-  ReturnType<typeof useDispatch>
-];
+  const useStore: useStore = () => [useState(), useDispatch()];
 
-const useStore: useStore = () => [useState(), useDispatch()];
+  const Store: React.FC<StoreProps<State>> = ({
+    reducer,
+    initialState,
+    children
+  }) => {
+    const [state, dispatch] = useImmerReducer(reducer, initialState);
 
-export {
-  Store,
-  useDispatch,
-  useState,
-  useStore,
-  StateContext,
-  DispatchContext
-};
+    return (
+      <StateContext.Provider value={state}>
+        <DispatchContext.Provider value={dispatch}>
+          {children}
+        </DispatchContext.Provider>
+      </StateContext.Provider>
+    );
+  };
+
+  return {
+    Store,
+    StateContext,
+    DispatchContext,
+    useDispatch,
+    useState,
+    useStore
+  };
+}
+
+export default makeStore;

@@ -7,12 +7,12 @@ import { action } from "@storybook/addon-actions";
 import Navbar from "../components/Navbar";
 import PopupContainer from "../components/PopupContainer";
 
-import BookmarkEditView from "../pages/Popup/BookmarkEditView";
+import BookmarkEditForm from "../pages/Popup/BookmarkEditView";
 
 storiesOf("Popup", module).add("BookmarkEditView", () => (
   <PopupContainer>
     <Navbar />
-    <BookmarkEditView
+    <BookmarkEditForm
       bookmark={{}}
       autocompleteTags={["test"]}
       onSave={action("save!")}
