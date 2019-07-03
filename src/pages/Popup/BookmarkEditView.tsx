@@ -5,7 +5,7 @@ import { uniq } from "lodash";
 import tw from "tailwind.macro";
 
 import { Bookmark } from "../../bookmarks";
-import { Creatable as CreatableSelect } from "react-select";
+import CreatableSelect from "react-select/creatable";
 
 const Form = tw.form`
   mb-6 p-4
@@ -44,11 +44,12 @@ const BookmarkEditForm: React.FC<BookmarkProps> = ({
 }) => {
   const [formData, setFormData] = useState<Bookmark>(bookmark);
 
-  const updateField = (fieldName: string, value: any) => setFormData({ ...formData, [fieldName]: value });
+  const updateField = (fieldName: string, value: any) =>
+    setFormData({ ...formData, [fieldName]: value });
 
   const updateFieldHandler = (fieldName: string) => (
     event: React.ChangeEvent<HTMLInputElement>
-  ) => updateField(fieldName, event.target.value)
+  ) => updateField(fieldName, event.target.value);
 
   return (
     <Form
@@ -75,23 +76,18 @@ const BookmarkEditForm: React.FC<BookmarkProps> = ({
           placeholder="Tags"
           options={uniq(
             autocompleteTags
-              .concat(bookmark.tags || [])
+              .concat(formData.tags || [])
               .map(item => ({ label: item, value: item }))
           )}
+          value={(formData.tags || []).map(value => ({ label: value, value }))}
           onChange={value => {
-            if (!value) return
+            if (!value) return;
+            if (!Array.isArray(value)) return;
 
-            let newTags: string[] = []
+            const newTags: string[] = value.map(v => v.value);
 
-            if (Array.isArray(value))
-              newTags = newTags.concat(value.map(v => v.value))
-            else {
-              if(!value) return
-              newTags.push(value.value)
-            }
-
-            updateField('tags', formData.tags.concat(value.map(v => v.value)))
-          }
+            updateField("tags", newTags);
+          }}
           styles={{
             placeholder: base => ({ ...base, color: "#a8adb6" })
           }}
@@ -103,7 +99,7 @@ const BookmarkEditForm: React.FC<BookmarkProps> = ({
           placeholder="Description"
           rows={10}
           value={formData.description}
-          onChange={updateFieldHandler('description')}
+          onChange={updateFieldHandler("description")}
         />
       </Fieldset>
     </Form>
