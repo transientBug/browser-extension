@@ -5,11 +5,12 @@ import { State } from "./state";
 import ActionTypes from "./types";
 
 const reducers: ReducerMap<State, Actions> = {
-  [ActionTypes.StartSaving]: (draft, action) => {
-    console.log({ draft, action });
+  [ActionTypes.StartSaving]: draft => {
+    draft.isLoading = true;
   },
   [ActionTypes.FinishSaving]: (draft, action) => {
-    console.log({ draft, action });
+    draft.isLoading = false;
+    draft.bookmark = action.payload.bookmark;
   }
 };
 

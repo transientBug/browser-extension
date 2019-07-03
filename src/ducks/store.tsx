@@ -2,14 +2,12 @@ import React, { useContext, createContext } from "react";
 
 import { useImmerReducer, ThunkableDispatch } from "./reducer";
 
-type StoreProps<State> = {
-  reducer: any;
-  initialState: State;
-};
-
-function makeStore<State>(initialState: State) {
-  const StateContext = createContext(initialState);
-  const DispatchContext = createContext<ThunkableDispatch<any>>(() => {});
+function makeStore<State, Payloads extends { type: string }>(
+  initialState: State,
+  reducers: any
+) {
+  const StateContext = createContext<State>(initialState);
+  const DispatchContext = createContext<ThunkableDispatch<Payloads>>(() => {});
 
   const useDispatch = () => useContext(DispatchContext);
   const useState = () => useContext(StateContext);
@@ -21,12 +19,8 @@ function makeStore<State>(initialState: State) {
 
   const useStore: useStore = () => [useState(), useDispatch()];
 
-  const Store: React.FC<StoreProps<State>> = ({
-    reducer,
-    initialState,
-    children
-  }) => {
-    const [state, dispatch] = useImmerReducer(reducer, initialState);
+  const Store: React.FC = ({ children }) => {
+    const [state, dispatch] = useImmerReducer(reducers, initialState);
 
     return (
       <StateContext.Provider value={state}>

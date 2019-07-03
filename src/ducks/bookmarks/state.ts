@@ -4,7 +4,7 @@ export interface State {
   isLoading: boolean;
   hasError?: boolean;
   errorDetails?: any;
-  bookmark?: Bookmark;
+  bookmark?: Partial<Bookmark>;
 }
 
 const initialState: State = {

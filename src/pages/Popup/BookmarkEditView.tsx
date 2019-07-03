@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 
 import { uniq } from "lodash";
 
@@ -6,6 +6,7 @@ import tw from "tailwind.macro";
 
 import { Bookmark } from "../../bookmarks";
 import CreatableSelect from "react-select/creatable";
+import { ValueType } from "react-select/src/types";
 
 const Form = tw.form`
   mb-6 p-4
@@ -32,7 +33,7 @@ const Textarea = tw.textarea`
 type onSave = (bookmark: Partial<Bookmark>) => void;
 
 interface BookmarkProps {
-  bookmark: Bookmark;
+  bookmark: Partial<Bookmark>;
   autocompleteTags: string[];
   onSave: onSave;
 }
@@ -40,9 +41,9 @@ interface BookmarkProps {
 const BookmarkEditForm: React.FC<BookmarkProps> = ({
   onSave,
   autocompleteTags,
-  bookmark
+  bookmark: formData
 }) => {
-  const [formData, setFormData] = useState<Bookmark>(bookmark);
+  const setFormData = (newState: Partial<Bookmark>) => onSave(newState);
 
   const updateField = (fieldName: string, value: any) =>
     setFormData({ ...formData, [fieldName]: value });
@@ -50,6 +51,26 @@ const BookmarkEditForm: React.FC<BookmarkProps> = ({
   const updateFieldHandler = (fieldName: string) => (
     event: React.ChangeEvent<HTMLInputElement>
   ) => updateField(fieldName, event.target.value);
+
+  const options = uniq(
+    autocompleteTags
+      .concat(formData.tags || [])
+      .map(item => ({ label: item, value: item }))
+  );
+
+  const tagValues = (formData.tags || []).map(value => ({
+    label: value,
+    value
+  }));
+
+  const tagsOnChange = (value: ValueType<{ label: string; value: string }>) => {
+    if (!value) return;
+    if (!Array.isArray(value)) return;
+
+    const newTags: string[] = value.map(v => v.value);
+
+    updateField("tags", newTags);
+  };
 
   return (
     <Form
@@ -74,20 +95,9 @@ const BookmarkEditForm: React.FC<BookmarkProps> = ({
           isMulti
           name="tags"
           placeholder="Tags"
-          options={uniq(
-            autocompleteTags
-              .concat(formData.tags || [])
-              .map(item => ({ label: item, value: item }))
-          )}
-          value={(formData.tags || []).map(value => ({ label: value, value }))}
-          onChange={value => {
-            if (!value) return;
-            if (!Array.isArray(value)) return;
-
-            const newTags: string[] = value.map(v => v.value);
-
-            updateField("tags", newTags);
-          }}
+          options={options}
+          value={tagValues}
+          onChange={tagsOnChange}
           styles={{
             placeholder: base => ({ ...base, color: "#a8adb6" })
           }}

@@ -55,10 +55,13 @@ const reducers: ReducerMap<State, typeof Actions> = {
   }
 };
 
-type ReducerMap<State, ActionMap> = {
+type ReducerMap<
+  State,
+  ActionMap extends { [keys: string]: (...args: any[]) => any }
+> = {
   [Key in keyof ActionMap]: (
     draft: State | Draft<State>,
-    action: ActionMap[Key]
+    action: ReturnType<ActionMap[Key]>
   ) => State | void
 };
 

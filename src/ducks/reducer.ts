@@ -1,10 +1,13 @@
 import { useReducer, useCallback } from "react";
 import produce, { Draft } from "immer";
 
-export type ReducerMap<State, ActionMap> = {
+export type ReducerMap<
+  State,
+  ActionMap extends { [keys: string]: (...args: any) => {} }
+> = {
   [Key in keyof ActionMap]: (
     draft: State | Draft<State>,
-    action: ActionMap[Key]
+    action: ReturnType<ActionMap[Key]>
   ) => State | void
 };
 
@@ -35,15 +38,15 @@ const useReducerMap = function<State, Payloads extends BasePayload>(
   reducers: ReducerMap<State, any>,
   initialState: State
 ): [State, React.Dispatch<Payloads>] {
-  const reducer = useCallback<ActionReducers<State, Payloads>>(
-    (_state, action) => {
+  const reducer = useCallback(
+    (state: State, action: Payloads) => {
       const actionReducer = reducers[action.type] as SingleActionReducer<
         State,
         typeof action
       >;
 
       // yololth
-      return (produce(actionReducer) as unknown) as State;
+      return produce(state, draft => actionReducer(draft, action)) as State;
     },
     [reducers]
   );
@@ -60,10 +63,14 @@ const useImmerReducer = function<State, Payloads extends BasePayload>(
     initialState
   );
 
-  const thunker: ThunkableDispatch<Payloads> = action => {
-    if (isThunk<Payloads>(action)) action(rawDispatch, state);
-    else rawDispatch(action);
-  };
+  // yolo middleware needed
+  const thunker: ThunkableDispatch<Payloads> = useCallback(
+    action => {
+      if (isThunk<Payloads>(action)) action(rawDispatch, state);
+      else rawDispatch(action);
+    },
+    [state, rawDispatch]
+  );
 
   return [state, thunker];
 };
