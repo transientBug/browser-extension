@@ -1,14 +1,26 @@
 import { Bookmark } from "../../bookmarks";
 
 export interface State {
-  isLoading: boolean;
-  hasError?: boolean;
-  errorDetails?: any;
+  loading: {
+    shown: boolean;
+    message?: string;
+  };
+  error?: {
+    message?: string;
+  };
+  auth?: {
+    accessToken?: string;
+    message?: string;
+  };
+  tags: string[];
   bookmark?: Partial<Bookmark>;
 }
 
 const initialState: State = {
-  isLoading: true
+  loading: {
+    shown: true
+  },
+  tags: []
 };
 
 export default initialState;

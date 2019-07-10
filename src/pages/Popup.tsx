@@ -23,56 +23,37 @@ const login = () => {
   window.close();
 };
 
-// const logout = () => {
-//   debug("Logging out");
-
-//   browser.storage.local.set({ accessToken: "" });
-// };
-
 const { Store, useStore } = makeStore(initialState, reducers);
 
-interface PopupContentsProps {
-  accessToken?: string;
-  tags?: string[];
-}
-
-const PopupContents: React.FC<PopupContentsProps> = ({ tags }) => {
+const PopupContents: React.FC = () => {
   const [state, dispatch] = useStore();
 
   useEffect(() => {
     (async () => dispatch(operations.save()))();
-  }, [dispatch]);
+  }, []);
 
-  if (state.isLoading) return <LoadingView />;
+  if (state.loading.shown) return <LoadingView />;
 
   return (
     <>
       <Navbar onClick={console.log} />
       {state.bookmark && (
         <BookmarkEditForm
-          autocompleteTags={tags || []}
+          autocompleteTags={state.tags}
           bookmark={state.bookmark}
-          onSave={console.log}
+          onSave={bookmark => dispatch(operations.update(bookmark))}
         />
       )}
     </>
   );
 };
 
-const Popup: React.FC = () => {
-  const [settings, , isInitialized] = useBrowserSettings();
-
-  const authed = !!settings.accessToken;
-
-  return (
-    <Store>
-      <PopupContainer>
-        {!authed && !isInitialized && <LoadingView />}
-        {!authed && isInitialized && <UnauthedView onLogin={login} />}
-        {authed && <PopupContents />}
-      </PopupContainer>
-    </Store>
-  );
-};
+const Popup: React.FC = () => (
+  <Store>
+    <PopupContainer>
+      <PopupContents />
+    </PopupContainer>
+  </Store>
+);
 
 export default Popup;

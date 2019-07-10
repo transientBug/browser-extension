@@ -67,7 +67,7 @@ async function save(bookmark: Partial<Bookmark>): Promise<Bookmark> {
   if (response.status === 401) throw new AuthError(`Extension unauthorized`);
 
   if (!response.ok)
-    throw new TypeError(
+    throw new APIError(
       `Non-Okay response back from the server: ${response.status}`
     );
 
