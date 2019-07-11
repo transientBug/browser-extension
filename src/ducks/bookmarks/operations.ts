@@ -114,26 +114,12 @@ const save = () => async (dispatch: ThunkableDispatch<any>) => {
   dispatch(actions.hideLoader());
 };
 
-let updateDebounce: any;
+const update = () => (dispatch: ThunkableDispatch<any>, state: State) => {
+  debug("Starting to update the bookmark with tB ...");
 
-const update = (bookmark: Partial<Bookmark>) => async (
-  dispatch: ThunkableDispatch<any>,
-  state: State
-) => {
-  debug("Starting to update the bookmark ...");
-
-  dispatch(actions.setBookmark(bookmark));
-
-  if (updateDebounce) clearTimeout(updateDebounce);
-
-  updateDebounce = setTimeout(async () => {
-    const newMark = await Bookmarks.save({ ...state.bookmark, ...bookmark });
-
-    newMark.url = newMark["uri"];
-    delete newMark["uri"];
-
-    dispatch(actions.setBookmark(newMark));
-  }, 250);
+  if (!state.bookmark || !state.bookmark.id) return;
+  browser.runtime.sendMessage({ action: "save", data: state.bookmark });
+  // await Bookmarks.update(state.bookmark.id, state.bookmark);
 };
 
-export { save, update };
+export default { save, update };

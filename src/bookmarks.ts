@@ -28,6 +28,7 @@ class AuthError extends Error {
   }
 }
 
+// TODO: Abstract sending a request out into a common function both of these can use
 async function save(bookmark: Partial<Bookmark>): Promise<Bookmark> {
   // TODO: refactor out the need for browser here
   const { endpoint, accessToken } = await browser.storage.local.get([
@@ -35,11 +36,9 @@ async function save(bookmark: Partial<Bookmark>): Promise<Bookmark> {
     "accessToken"
   ]);
 
-  const { id = "" } = bookmark;
+  const method = "POST";
 
-  const method = id ? "PATCH" : "POST";
-
-  const url = `${endpoint}/api/v1/bookmarks/${id}`;
+  const url = `${endpoint}/api/v1/bookmarks`;
 
   const headers = new Headers({
     "Content-Type": "application/vnd.api+json",
@@ -71,12 +70,75 @@ async function save(bookmark: Partial<Bookmark>): Promise<Bookmark> {
       `Non-Okay response back from the server: ${response.status}`
     );
 
-  const {
-    data: { attributes }
-  } = await response.json();
+  const json = await response.json();
 
-  return attributes;
+  debug("response json", json);
+
+  const {
+    data: { attributes, id }
+  } = json;
+
+  return { ...attributes, id };
 }
 
-export default { save };
+async function update(
+  id: string | number,
+  bookmark: Partial<Bookmark>
+): Promise<Bookmark> {
+  // TODO: refactor out the need for browser here
+  const { endpoint, accessToken } = await browser.storage.local.get([
+    "endpoint",
+    "accessToken"
+  ]);
+
+  const method = "PATCH";
+
+  const url = `${endpoint}/api/v1/bookmarks/${id}`;
+
+  const headers = new Headers({
+    "Content-Type": "application/vnd.api+json",
+    Accept: "application/vnd.api+json",
+    Authorization: `Bearer ${accessToken}`
+  });
+
+  const body = JSON.stringify({
+    data: {
+      type: "bookmark",
+      attributes: {
+        id,
+        ...bookmark
+      }
+    }
+  });
+
+  const fetchParams = { method, headers, body };
+
+  debug("sending request", url, body, headers, fetchParams);
+
+  const response = await fetch(url, fetchParams);
+
+  debug("response", response);
+
+  if (response.status === 401) throw new AuthError(`Extension unauthorized`);
+
+  if (!response.ok)
+    throw new APIError(
+      `Non-Okay response back from the server: ${response.status}`
+    );
+
+  const json = await response.json();
+
+  debug("response json", json);
+
+  const {
+    data: { attributes }
+  } = json;
+
+  return { ...attributes, id };
+}
+
+// const request = ({ method, url, accessToken, body }) => {
+// }
+
+export default { save, update };
 export { APIError, AuthError };

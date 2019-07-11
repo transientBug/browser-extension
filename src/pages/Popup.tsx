@@ -8,7 +8,12 @@ import BookmarkEditForm from "./Popup/BookmarkEditView";
 import Navbar from "../components/Navbar";
 import PopupContainer from "../components/PopupContainer";
 
-import { reducers, initialState, operations } from "../ducks/bookmarks";
+import {
+  reducers,
+  initialState,
+  operations,
+  actions
+} from "../ducks/bookmarks";
 import makeStore from "../ducks/store";
 
 import debugFactory from "../debug";
@@ -31,6 +36,10 @@ const PopupContents: React.FC = () => {
     dispatch(operations.save());
   }, []);
 
+  window.onunload = e => {
+    dispatch(operations.update());
+  };
+
   if (state.loading.shown) return <LoadingView />;
   if (state.auth && !state.auth.accessToken && state.auth.message)
     return <UnauthedView onLogin={login} />;
@@ -46,7 +55,7 @@ const PopupContents: React.FC = () => {
       <BookmarkEditForm
         autocompleteTags={state.tags}
         bookmark={state.bookmark}
-        onSave={bookmark => dispatch(operations.update(bookmark))}
+        onSave={bookmark => dispatch(actions.setBookmark(bookmark))}
       />
     </>
   );

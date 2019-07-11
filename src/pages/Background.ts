@@ -2,6 +2,7 @@
 
 import debugFactoryOG from "debug";
 import debugFactory from "../debug";
+import Bookmarks, { Bookmark } from "../bookmarks";
 const debug: debug.IDebugger = debugFactory.extend("page").extend("Background");
 
 const debugable = process.env.REACT_APP_DEBUGABLE;
@@ -119,7 +120,9 @@ function onMessageHandler(message: any) {
   switch (message.action) {
     case "save": {
       debug("saving in background", message.data);
-      // save(message.data);
+      const { id, ...bookmark } = message.data as Partial<Bookmark>;
+      if (!id) return;
+      Bookmarks.update(id, bookmark);
       break;
     }
 
