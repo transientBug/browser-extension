@@ -82,6 +82,9 @@ const save = () => async (dispatch: ThunkableDispatch<any>) => {
       url: activeTab.url,
       title: activeTab.title
     });
+
+    bookmarkData.url = bookmarkData["uri"];
+    delete bookmarkData["uri"];
   } catch (e) {
     debug("Error while talking to API", e);
     if (!(e instanceof AuthError)) throw e;
@@ -125,6 +128,9 @@ const update = (bookmark: Partial<Bookmark>) => async (
 
   updateDebounce = setTimeout(async () => {
     const newMark = await Bookmarks.save({ ...state.bookmark, ...bookmark });
+
+    newMark.url = newMark["uri"];
+    delete newMark["uri"];
 
     dispatch(actions.setBookmark(newMark));
   }, 250);

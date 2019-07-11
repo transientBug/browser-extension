@@ -7,7 +7,6 @@ import BookmarkEditForm from "./Popup/BookmarkEditView";
 
 import Navbar from "../components/Navbar";
 import PopupContainer from "../components/PopupContainer";
-import { useBrowserSettings } from "../components/BrowserSettingsProvider";
 
 import { reducers, initialState, operations } from "../ducks/bookmarks";
 import makeStore from "../ducks/store";
@@ -29,21 +28,26 @@ const PopupContents: React.FC = () => {
   const [state, dispatch] = useStore();
 
   useEffect(() => {
-    (async () => dispatch(operations.save()))();
+    dispatch(operations.save());
   }, []);
 
   if (state.loading.shown) return <LoadingView />;
+  if (state.auth && !state.auth.accessToken && state.auth.message)
+    return <UnauthedView onLogin={login} />;
+
+  if (!state.bookmark)
+    throw new Error("Oh fuck that's not good: No bookmark in state");
+
+  debug(state);
 
   return (
     <>
       <Navbar onClick={console.log} />
-      {state.bookmark && (
-        <BookmarkEditForm
-          autocompleteTags={state.tags}
-          bookmark={state.bookmark}
-          onSave={bookmark => dispatch(operations.update(bookmark))}
-        />
-      )}
+      <BookmarkEditForm
+        autocompleteTags={state.tags}
+        bookmark={state.bookmark}
+        onSave={bookmark => dispatch(operations.update(bookmark))}
+      />
     </>
   );
 };
