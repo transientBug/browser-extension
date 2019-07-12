@@ -13,20 +13,19 @@ const {
   location: { hash }
 } = window;
 
+const Components: { [keys: string]: () => React.LazyExoticComponent<any> } = {
+  "#options": () => lazy(() => import("./pages/Options")),
+  "#popup": () => lazy(() => import("./pages/Popup"))
+};
+
 const RenderReact = () => {
   const root = document.getElementById("root");
 
-  // TODO: Background does not need to be a react page since it'll never be seen
-  const Components: { [keys: string]: React.LazyExoticComponent<any> } = {
-    "#options": lazy(() => import("./pages/Options")),
-    "#popup": lazy(() => import("./pages/Popup"))
-  };
+  const componentFetcher = Components[hash];
+  if (!componentFetcher)
+    throw new Error(`Something went terribly wrong! No page found for ${hash}`);
 
-  const Component = Components[hash];
-  if (!Component)
-    throw new Error(
-      `Something went terribly wrong! No page found for #{ hash }`
-    );
+  const Component = componentFetcher();
 
   ReactDOM.render(
     <ErrorBoundary>
