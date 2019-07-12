@@ -1,6 +1,6 @@
 import React, { useContext, createContext } from "react";
 
-import { useImmerReducer, ThunkableDispatch } from "./reducer";
+import { useImmerReducer, ThunkableDispatch } from "./useImmerReducer";
 
 function makeStore<State, Payloads extends { type: string }>(
   initialState: State,

@@ -1,4 +1,4 @@
-import { ReducerMap } from "../reducer";
+import { ReducerMap } from "../useImmerReducer";
 
 import { Actions } from "./actions";
 import { State } from "./state";

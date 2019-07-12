@@ -1,12 +1,19 @@
 /* global browser */
 import actions from "./actions";
-import { ThunkableDispatch } from "../reducer";
-import Bookmarks, { AuthError, Bookmark } from "../../bookmarks";
+import { ThunkableDispatch } from "../useImmerReducer";
 
 import API, { AuthError } from "../../api";
 
-import debugFactory from "../../debug";
+import { flatten, sample, take, uniq } from "lodash";
+
 import { State } from "./state";
+
+import {
+  setSettings,
+  getSettings
+} from "../../components/BrowserSettingsProvider";
+
+import debugFactory from "../../debug";
 const debug: debug.IDebugger = debugFactory
   .extend("operations")
   .extend("bookmarks");
@@ -52,13 +59,10 @@ const save = () => async (dispatch: ThunkableDispatch<any>) => {
 
   debug("Fetching browser extension settings");
 
-  const {
-    accessToken,
-    tags: existingTags
-  }: {
-    accessToken: string;
-    tags: string[];
-  } = await browser.storage.local.get(["accessToken", "tags"]);
+  const { accessToken, tags: existingTags = [] } = await getSettings([
+    "accessToken",
+    "tags"
+  ]);
 
   if (!accessToken) {
     dispatch(actions.unauthenticate("You're not logged in yet!"));
@@ -89,7 +93,7 @@ const save = () => async (dispatch: ThunkableDispatch<any>) => {
     debug("Error while talking to API", e);
     if (!(e instanceof AuthError)) throw e;
 
-    await browser.storage.local.set({ accessToken: "" });
+    await setSettings({ accessToken: "" });
 
     dispatch(
       actions.unauthenticate("Extension is not authorized with transientBug")
@@ -107,7 +111,7 @@ const save = () => async (dispatch: ThunkableDispatch<any>) => {
 
   debug("Merging and updating local tag storage");
   const tags = mergeTags(existingTags as string[], bookmarkData.tags);
-  await browser.storage.local.set({ tags });
+  await setSettings({ tags });
   debug("Tags updated", tags);
 
   dispatch(actions.setBookmark(bookmarkData));
