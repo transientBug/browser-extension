@@ -1,7 +1,6 @@
 import React, { ReactChild } from "react";
 
 import tw from "tailwind.macro";
-import styled from "@emotion/styled/macro";
 import { css } from "emotion/macro";
 
 const isObject = <T extends object>(value: any): value is T =>
@@ -31,8 +30,8 @@ const blue = css`
   ${base}
 `;
 
-const Bold = styled.p`
-  ${tw`font-bold`}
+const Bold = tw.p`
+  font-bold
 `;
 
 type ChildSlots = {

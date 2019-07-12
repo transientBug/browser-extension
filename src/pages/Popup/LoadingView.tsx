@@ -6,6 +6,7 @@ import Loader from "../../components/Loader";
 const LoadingView = () => (
   <CenteredContent>
     <Loader />
+    <p>Testing ...</p>
   </CenteredContent>
 );
 

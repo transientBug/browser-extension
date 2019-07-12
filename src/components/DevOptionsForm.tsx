@@ -1,7 +1,6 @@
 import React from "react";
 
 import tw from "tailwind.macro";
-import styled from "@emotion/styled/macro";
 import { css } from "emotion/macro";
 
 import { Settings, SettingsSetter } from "./BrowserSettingsProvider";
@@ -10,24 +9,20 @@ import Alert from "./Alert";
 import DebugFilterList from "./DebugFilterList";
 import endpoints from "../endpoints";
 
-// import debugFactory from "../debug";
-
-// const debug = debugFactory.extend("components").extend("DevOptionsForm");
-
-const H2 = styled.h2`
-  ${tw`block text-gray-700 text-xl3 font-bold mb-2`}
+const H2 = tw.h2`
+  block text-gray-700 text-xl3 font-bold mb-2
 `;
 
-const Form = styled.form`
-  ${tw`mb-4`}
+const Form = tw.form`
+  mb-4
 `;
 
-const Fieldset = styled.fieldset`
-  ${tw`mb-4 flex flex-col content-between`}
+const Fieldset = tw.fieldset`
+  mb-4 flex flex-col content-between
 `;
 
-const Legend = styled.legend`
-  ${tw`block text-gray-700 text-sm font-bold mb-2`}
+const Legend = tw.legend`
+  block text-gray-700 text-sm font-bold mb-2
 `;
 
 const inputStyle = css`
@@ -39,6 +34,7 @@ interface DevOptionsFormProps {
   update: SettingsSetter;
 }
 
+// TODO: clean this up with the styling
 const DevOptionsForm: React.FC<DevOptionsFormProps> = ({
   settings,
   update

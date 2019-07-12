@@ -1,24 +1,24 @@
 import React from "react";
 
 import tw from "tailwind.macro";
-import styled from "@emotion/styled/macro";
+
 import Button from "./Button";
 import Alert from "./Alert";
 
-const Form = styled.form`
-  ${tw`mb-4`}
+const Form = tw.form`
+  mb-4
 `;
 
-const Fieldset = styled.fieldset`
-  ${tw`mb-4`}
+const Fieldset = tw.fieldset`
+  mb-4
 `;
 
-const Legend = styled.legend`
-  ${tw`block text-gray-700 text-l font-bold mb-2`}
+const Legend = tw.legend`
+  block text-gray-700 text-l font-bold mb-2
 `;
 
-const P = styled.p`
-  ${tw`my-1`}
+const P = tw.p`
+  my-1
 `;
 
 interface AuthenticatonFormProps {
@@ -27,6 +27,7 @@ interface AuthenticatonFormProps {
   onLogin?: any;
 }
 
+// TODO: fetch the current user during auth and display who is currently logged in
 const AuthenticationForm: React.FC<AuthenticatonFormProps> = ({
   accessToken,
   onLogout,

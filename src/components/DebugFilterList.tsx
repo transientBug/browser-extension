@@ -1,7 +1,6 @@
 import React, { useCallback } from "react";
 
 import tw from "tailwind.macro";
-// import styled from "@emotion/styled/macro";
 import { css } from "emotion/macro";
 
 import debugFactory, { debugInstances, DebugData } from "../debug";
