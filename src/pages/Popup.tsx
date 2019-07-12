@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 
 import LoadingView from "./Popup/LoadingView";
 import UnauthedView from "./Popup/UnauthedView";
-import BookmarkEditForm from "./Popup/BookmarkEditView";
+import BookmarkEditForm from "../components/BookmarkEditForm";
 
 import Navbar from "../components/Navbar";
 import PopupContainer from "../components/PopupContainer";
@@ -55,7 +55,7 @@ const PopupContents: React.FC = () => {
       <BookmarkEditForm
         autocompleteTags={state.tags}
         bookmark={state.bookmark}
-        onSave={bookmark => dispatch(actions.setBookmark(bookmark))}
+        onUpdate={bookmark => dispatch(actions.setBookmark(bookmark))}
       />
     </>
   );

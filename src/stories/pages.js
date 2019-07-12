@@ -7,7 +7,7 @@ import { action } from "@storybook/addon-actions";
 import Navbar from "../components/Navbar";
 import PopupContainer from "../components/PopupContainer";
 
-import BookmarkEditForm from "../pages/Popup/BookmarkEditView";
+import BookmarkEditForm from "../components/BookmarkEditForm";
 
 storiesOf("Popup", module).add("BookmarkEditView", () => (
   <PopupContainer>
@@ -15,7 +15,7 @@ storiesOf("Popup", module).add("BookmarkEditView", () => (
     <BookmarkEditForm
       bookmark={{}}
       autocompleteTags={["test"]}
-      onSave={action("save!")}
+      onUpdate={action("save!")}
     />
   </PopupContainer>
 ));

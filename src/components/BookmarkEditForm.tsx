@@ -4,7 +4,7 @@ import { uniq } from "lodash";
 
 import tw from "tailwind.macro";
 
-import { Bookmark } from "../../bookmarks";
+import { Bookmark } from "../bookmarks";
 import CreatableSelect from "react-select/creatable";
 import { ValueType } from "react-select/src/types";
 
@@ -32,18 +32,18 @@ const Textarea = tw.textarea`
 
 type onSave = (bookmark: Partial<Bookmark>) => void;
 
-interface BookmarkProps {
+interface BookmarkEditFormProps {
   bookmark: Partial<Bookmark>;
   autocompleteTags: string[];
-  onSave: onSave;
+  onUpdate: onSave;
 }
 
-const BookmarkEditForm: React.FC<BookmarkProps> = ({
-  onSave,
+const BookmarkEditForm: React.FC<BookmarkEditFormProps> = ({
+  onUpdate,
   autocompleteTags,
   bookmark: formData
 }) => {
-  const setFormData = (newState: Partial<Bookmark>) => onSave(newState);
+  const setFormData = (newState: Partial<Bookmark>) => onUpdate(newState);
 
   const updateField = (fieldName: string, value: any) =>
     setFormData({ ...formData, [fieldName]: value });
@@ -76,7 +76,7 @@ const BookmarkEditForm: React.FC<BookmarkProps> = ({
     <Form
       onSubmit={(e: React.FormEvent) => {
         e.preventDefault();
-        onSave(formData);
+        onUpdate(formData);
       }}
     >
       <Fieldset>
