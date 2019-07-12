@@ -3,7 +3,7 @@ import actions from "./actions";
 import { ThunkableDispatch } from "../reducer";
 import Bookmarks, { AuthError, Bookmark } from "../../bookmarks";
 
-import { take, uniq, flatten, sample } from "lodash";
+import API, { AuthError } from "../../api";
 
 import debugFactory from "../../debug";
 import { State } from "./state";
@@ -78,7 +78,7 @@ const save = () => async (dispatch: ThunkableDispatch<any>) => {
 
   let bookmarkData;
   try {
-    bookmarkData = await Bookmarks.save({
+    bookmarkData = await API.Bookmarks.save({
       url: activeTab.url,
       title: activeTab.title
     });

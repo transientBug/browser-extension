@@ -4,9 +4,10 @@ import { uniq } from "lodash";
 
 import tw from "tailwind.macro";
 
-import { Bookmark } from "../bookmarks";
 import CreatableSelect from "react-select/creatable";
 import { ValueType } from "react-select/src/types";
+
+import { Bookmark } from "../api/types";
 
 const Form = tw.form`
   mb-6 p-4

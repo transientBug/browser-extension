@@ -1,5 +1,5 @@
 import ActionTypes from "./types";
-import { Bookmark } from "../../bookmarks";
+import { Bookmark } from "../../api/types";
 
 const showLoader = (message?: string) =>
   ({ type: ActionTypes.ShowLoader, payload: { message } } as const);

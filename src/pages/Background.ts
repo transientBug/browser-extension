@@ -1,8 +1,10 @@
 /* global browser */
 
+import { Bookmark } from "../api/types";
+import API from "../api";
+
 import debugFactoryOG from "debug";
 import debugFactory from "../debug";
-import Bookmarks, { Bookmark } from "../bookmarks";
 const debug: debug.IDebugger = debugFactory.extend("page").extend("Background");
 
 const debugable = process.env.REACT_APP_DEBUGABLE;
@@ -59,7 +61,7 @@ async function afterInstall(details: any) {
 
   await setupDevListener();
 
-  debug("installed", details);
+  debug("installed!", details);
 }
 
 /**
@@ -74,7 +76,7 @@ function extractAcccessToken(redirectUri: string) {
   const m = redirectUri.match(/[#?](.*)/);
   if (!m || m.length < 1) return null;
 
-  debug("m", m);
+  debug("redirect uri matchs", m);
 
   const params = new URLSearchParams(m[1].split("#")[0]);
 
@@ -120,9 +122,12 @@ function onMessageHandler(message: any) {
   switch (message.action) {
     case "save": {
       debug("saving in background", message.data);
+
       const { id, ...bookmark } = message.data as Partial<Bookmark>;
       if (!id) return;
-      Bookmarks.update(id, bookmark);
+
+      API.Bookmarks.update(id, bookmark);
+
       break;
     }
 

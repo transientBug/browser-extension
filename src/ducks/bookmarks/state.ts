@@ -1,4 +1,4 @@
-import { Bookmark } from "../../bookmarks";
+import { Bookmark } from "../../api/types";
 
 export interface State {
   loading: {
