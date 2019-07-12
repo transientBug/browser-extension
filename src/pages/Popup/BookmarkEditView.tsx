@@ -1,4 +1,3 @@
-/* global browser */
 import React from "react";
 
 import Navbar, { NavButton } from "../../components/Navbar";
