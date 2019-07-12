@@ -34,17 +34,16 @@ const currentTab = async (): Promise<browser.tabs.Tab> => {
   });
 
   if (tabs.length < 1)
-    throw new Error("No active tabs found, can't bookmark anything!");
+    throw new Error("No active tabs found, can't bookmark undefined!");
 
   return tabs[0];
 };
 
+// TODO: These aren't displayed anywhere yet but they should be
 const loadingMessages = [
-  "Fetching dragons ...",
+  "Finding dragons ...",
   "Building homes with piggies ...",
-  "Makin' Bacon ...",
-  "BOOKMARKS MUTHERFOOKER, DO YOU USE THEM?!",
-  "Riding scooters in the rain"
+  "Makin' Bacon ..."
 ];
 
 const save = () => async (dispatch: ThunkableDispatch<any>) => {

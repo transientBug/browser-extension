@@ -8,8 +8,8 @@ import BookmarkEditForm from "../components/BookmarkEditForm";
 
 import Navbar, { NavButton } from "../components/Navbar";
 
-import { ReactComponent as LinkSVG } from "./link.svg";
-import { ReactComponent as SaveSVG } from "./save-disk.svg";
+import { ReactComponent as LinkSVG } from "../components/link.svg";
+import { ReactComponent as SaveSVG } from "../components/save-disk.svg";
 
 import PopupContainer from "../components/PopupContainer";
 
@@ -60,7 +60,9 @@ const PopupContents: React.FC = () => {
     return <UnauthedView onLogin={login} />;
 
   if (!state.bookmark)
-    throw new Error("Oh fuck that's not good: No bookmark in state");
+    throw new Error(
+      "Uh oh, that's not good: No bookmark object exists in state"
+    );
 
   debug("current state", state);
 
