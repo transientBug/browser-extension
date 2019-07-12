@@ -4,7 +4,7 @@ import tw from "tailwind.macro";
 import styled from "@emotion/styled/macro";
 import { css } from "emotion/macro";
 
-import { Settings, SettingsUpdater } from "./BrowserSettingsProvider";
+import { Settings, SettingsSetter } from "./BrowserSettingsProvider";
 
 import Alert from "./Alert";
 import DebugFilterList from "./DebugFilterList";
@@ -36,7 +36,7 @@ const inputStyle = css`
 
 interface DevOptionsFormProps {
   settings: Settings;
-  update: SettingsUpdater;
+  update: SettingsSetter;
 }
 
 const DevOptionsForm: React.FC<DevOptionsFormProps> = ({

@@ -16,22 +16,25 @@ export type Settings = {
   tags?: string[];
 };
 
-export type SettingsUpdater = (
+export type SettingsGetter = (keys?: string[]) => Promise<Partial<Settings>>;
+
+export type SettingsSetter = (
   keys: browser.storage.StorageObject
 ) => void | Promise<void>;
 
+const getSettings: SettingsGetter = keys => browser.storage.local.get(keys);
+const setSettings: SettingsSetter = keys => browser.storage.local.set(keys);
+
 const BrowserSettingsContext = createContext<Settings>({});
-const BrowserSettingsUpdateContext = createContext<SettingsUpdater>(() =>
+const BrowserSettingsUpdateContext = createContext<SettingsSetter>(() =>
   Promise.resolve()
 );
 
-type useBrowserSettings = () => [Settings, SettingsUpdater, boolean];
+type useBrowserSettings = () => [Settings, SettingsSetter, boolean];
 
 const useBrowserSettings: useBrowserSettings = () => {
   const [allData, setAllData] = useState<Settings>({});
   const [isInitialized, setIsInitialized] = useState(false);
-
-  const updater: SettingsUpdater = keys => browser.storage.local.set(keys);
 
   const onSettingsChange = useCallback(
     (
@@ -62,13 +65,13 @@ const useBrowserSettings: useBrowserSettings = () => {
 
   useEffect(() => {
     (async () => {
-      setAllData(await browser.storage.local.get());
+      setAllData(await getSettings());
 
       setIsInitialized(true);
     })();
   }, []);
 
-  return [allData, updater, isInitialized];
+  return [allData, setSettings, isInitialized];
 };
 
 const BrowserSettingsProvider: React.FC = ({ children }) => {
@@ -85,6 +88,8 @@ const BrowserSettingsProvider: React.FC = ({ children }) => {
 
 export default BrowserSettingsProvider;
 export {
+  getSettings,
+  setSettings,
   useBrowserSettings,
   BrowserSettingsContext,
   BrowserSettingsUpdateContext

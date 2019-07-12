@@ -43,7 +43,8 @@ const loadingMessages = [
   "Fetching dragons ...",
   "Building homes with piggies ...",
   "Makin' Bacon ...",
-  "BOOKMARKS MUTHERFOOKER, DO YOU USE THEM?!"
+  "BOOKMARKS MUTHERFOOKER, DO YOU USE THEM?!",
+  "Riding scooters in the rain"
 ];
 
 const save = () => async (dispatch: ThunkableDispatch<any>) => {
@@ -117,9 +118,11 @@ const save = () => async (dispatch: ThunkableDispatch<any>) => {
 const update = () => (dispatch: ThunkableDispatch<any>, state: State) => {
   debug("Starting to update the bookmark with tB ...");
 
+  // Save in the background because otherwise the promise won't resolve before the window context is closed, leading the the finall request not finishing potentially.
+  // This isn't without its own flaws and that same issue however sending a message between browser contexts is a lot faster than to an external API
+
   if (!state.bookmark || !state.bookmark.id) return;
   browser.runtime.sendMessage({ action: "save", data: state.bookmark });
-  // await Bookmarks.update(state.bookmark.id, state.bookmark);
 };
 
 export default { save, update };
