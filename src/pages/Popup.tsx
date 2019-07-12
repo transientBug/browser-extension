@@ -28,9 +28,12 @@ const PopupContents: React.FC = () => {
 
   useEffect(() => {
     dispatch(operations.save());
-  }, []);
+  }, []); // eslint-disable-line
 
-  window.onunload = e => dispatch(operations.update());
+  window.onunload = e => {
+    if (!state.bookmark) return;
+    dispatch(operations.update());
+  };
 
   debug("current state", state);
 
