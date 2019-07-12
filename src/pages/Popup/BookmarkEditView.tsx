@@ -1,12 +1,9 @@
 /* global browser */
 import React from "react";
-import tw from "tailwind.macro";
 
 import Navbar, { NavButton } from "../../components/Navbar";
 import BookmarkEditForm from "../../components/BookmarkEditForm";
-
-import { ReactComponent as LinkSVG } from "../../components/link.svg";
-import { ReactComponent as SaveSVG } from "../../components/save-disk.svg";
+import { SaveIcon, LinkIcon } from "../../components/Icons";
 
 import useStore from "./store";
 import { operations, actions } from "../../ducks/bookmarks";
@@ -16,14 +13,6 @@ const debug: debug.IDebugger = debugFactory
   .extend("page")
   .extend("Popup")
   .extend("BookmarkEditView");
-
-const SaveIcon = tw(SaveSVG)`
-  fill-current inline-block h-4 w-4
-`;
-
-const LinkIcon = tw(LinkSVG)`
-  fill-current inline-block h-4 w-4
-`;
 
 const BookmarkEditView: React.FC = () => {
   const [{ tags, bookmark }, dispatch] = useStore();
