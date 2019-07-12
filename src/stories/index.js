@@ -6,24 +6,19 @@ import { storiesOf } from "@storybook/react";
 import { action } from "@storybook/addon-actions";
 // import { linkTo } from "@storybook/addon-links";
 
-import "./pages";
-
-import Loader from "../components/Loader";
+import * as Icons from "../components/Icons";
+import Navbar, { NavButton } from "../components/Navbar";
 import Alert from "../components/Alert";
-import ErrorBoundary from "../components/ErrorBoundary";
-import PopupContainer from "../components/PopupContainer";
-import CenteredContent from "../components/CenteredContent";
-import Button from "../components/Button";
 import AuthenticationForm from "../components/AuthenticationForm";
+import BookmarkEditForm from "../components/BookmarkEditForm";
 import BuildInfo from "../components/BuildInfo";
+import Button from "../components/Button";
+import CenteredContent from "../components/CenteredContent";
+import DebugFilterList from "../components/DebugFilterList";
 import DevOptionsForm from "../components/DevOptionsForm";
-
-import debug from "debug";
-debug("transientBug")
-  .extend("Storybook")
-  .extend("Test");
-
-storiesOf("Loader", module).add("default", () => <Loader />);
+import ErrorBoundary from "../components/ErrorBoundary";
+import Loader from "../components/Loader";
+import PopupContainer from "../components/PopupContainer";
 
 storiesOf("Alert", module)
   .add("default", () => (
@@ -46,36 +41,15 @@ storiesOf("Alert", module)
     </Alert>
   ));
 
-storiesOf("CenteredContent", module).add("centered Loader", () => (
-  <PopupContainer>
-    <CenteredContent>
-      <Loader />
-    </CenteredContent>
-  </PopupContainer>
-));
-
-const Errorable = () => {
-  throw new Error("Uh oh!");
-};
-
-storiesOf("ErrorBoundary", module)
-  .add("with an error", () => (
-    <ErrorBoundary>
-      <Errorable />
-    </ErrorBoundary>
-  ))
-  .add("with no error", () => (
-    <ErrorBoundary>
-      <p>Well hello there!</p>
-    </ErrorBoundary>
-  ));
-
-storiesOf("Button", module).add("default", () => (
-  <Button onClick={action("clicked")}>Click me!</Button>
-));
-
 storiesOf("AutheticationForm", module)
-  .add("Unauthenticated", () => <AuthenticationForm />)
+  .add("Unauthenticated", () => (
+    <AuthenticationForm
+      onLogin={e => {
+        action("login")();
+        e.preventDefault();
+      }}
+    />
+  ))
   .add("Authenticated", () => (
     <AuthenticationForm
       accessToken={"test"}
@@ -90,6 +64,39 @@ storiesOf("BuildInfo", module)
   .add("default", () => <BuildInfo />)
   .add("temporary install", () => <BuildInfo temporaryInstall={true} />);
 
+storiesOf("Button", module).add("default", () => (
+  <Button onClick={action("clicked")}>Click me!</Button>
+));
+
+storiesOf("CenteredContent", module).add("centered Loader", () => (
+  <PopupContainer>
+    <CenteredContent>
+      <Loader />
+    </CenteredContent>
+  </PopupContainer>
+));
+
 storiesOf("DevOptionsForm", module).add("default", () => (
   <DevOptionsForm settings={{}} update={action("update!")} />
 ));
+
+const Errorable = () => {
+  throw new Error("Uh oh!");
+};
+
+storiesOf("ErrorBoundary", module)
+  .add("with an error", () => (
+    <ErrorBoundary>
+      <Errorable />
+      <p>That didn't go well</p>
+    </ErrorBoundary>
+  ))
+  .add("with no error", () => (
+    <ErrorBoundary>
+      <p>Well hello there!</p>
+    </ErrorBoundary>
+  ));
+
+storiesOf("Loader", module).add("default", () => <Loader />);
+
+storiesOf("PopupContainer", module).add("default", () => <PopupContainer />);
