@@ -16,6 +16,8 @@ const PopupContainer = styled.div`
 
   min-block-size: 400px;
   max-block-size: 400px;
+
+  overflow: hidden;
 `;
 
 export default PopupContainer;

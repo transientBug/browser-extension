@@ -3,7 +3,7 @@ import React from "react";
 import tw from "tailwind.macro";
 import { css } from "emotion/macro";
 
-import { Settings, SettingsSetter } from "./BrowserSettingsProvider";
+import { Settings, SettingsSetter } from "./BrowserSettingsProvider/types";
 
 import Alert from "./Alert";
 import DebugFilterList from "./DebugFilterList";
