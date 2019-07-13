@@ -38,13 +38,13 @@ const PopupContents: React.FC = () => {
   debug("current state", state);
 
   const loading = state.loading.shown;
-  const authed = state.auth && !state.auth.accessToken && state.auth.message;
-  const editing = !loading && !authed;
+  const unauthed = state.auth && !state.auth.accessToken && state.auth.message;
+  const editing = !loading && !unauthed;
 
   return (
     <>
       {loading && <LoadingView />}
-      {!authed && <UnauthedView onLogin={login} />}
+      {unauthed && <UnauthedView onLogin={login} />}
       {editing && <BookmarkEditView />}
     </>
   );
