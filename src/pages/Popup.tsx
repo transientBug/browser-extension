@@ -7,7 +7,8 @@ import BookmarkEditView from "./Popup/BookmarkEditView";
 
 import PopupContainer from "../components/PopupContainer";
 
-import { operations } from "../ducks/bookmarks";
+import { operations as authOperations } from "../ducks/auth";
+import { operations as bookmarkOperations } from "../ducks/bookmarks";
 import useStore, { Store } from "./Popup/store";
 
 import debugFactory from "../debug";
@@ -27,12 +28,12 @@ const PopupContents: React.FC = () => {
   const [state, dispatch] = useStore();
 
   useEffect(() => {
-    dispatch(operations.save());
+    dispatch(bookmarkOperations.save());
   }, []); // eslint-disable-line
 
   window.onunload = e => {
     if (!state.bookmark) return;
-    dispatch(operations.update());
+    dispatch(bookmarkOperations.update());
   };
 
   debug("current state", state);

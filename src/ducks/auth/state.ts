@@ -1,10 +1,8 @@
-import { Bookmark } from "../../api/types";
-
 export interface State {
-  error?: {
+  auth?: {
+    accessToken?: string;
     message?: string;
   };
-  bookmark?: Partial<Bookmark>;
 }
 
 const initialState: State = {};

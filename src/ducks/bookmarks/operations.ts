@@ -1,5 +1,8 @@
 /* global browser */
 import actions from "./actions";
+import popupActions from "../popup/actions";
+import authActions from "../auth/actions";
+
 import { ThunkableDispatch } from "../useImmerReducer";
 
 import API, { AuthError } from "../../api";
@@ -55,7 +58,7 @@ const loadingMessages = [
 
 const save = () => async (dispatch: ThunkableDispatch<any>) => {
   debug("Starting save process");
-  dispatch(actions.showLoader(sample(loadingMessages)));
+  dispatch(popupActions.showLoader(sample(loadingMessages)));
 
   debug("Fetching browser extension settings");
 
@@ -65,16 +68,16 @@ const save = () => async (dispatch: ThunkableDispatch<any>) => {
   ]);
 
   if (!accessToken) {
-    dispatch(actions.unauthenticate("You're not logged in yet!"));
-    dispatch(actions.hideLoader());
+    dispatch(authActions.unauthenticate("You're not logged in yet!"));
+    dispatch(popupActions.hideLoader());
     return;
   }
 
-  dispatch(actions.updateTags(existingTags));
-  dispatch(actions.authenticate(accessToken));
+  dispatch(popupActions.updateTags(existingTags));
+  dispatch(authActions.authenticate(accessToken));
 
   debug("Saving bookmark ...");
-  dispatch(actions.showLoader("Saving bookmark ..."));
+  dispatch(popupActions.showLoader("Saving bookmark ..."));
 
   const activeTab = await currentTab();
 
@@ -96,9 +99,11 @@ const save = () => async (dispatch: ThunkableDispatch<any>) => {
     await setSettings({ accessToken: "" });
 
     dispatch(
-      actions.unauthenticate("Extension is not authorized with transientBug")
+      authActions.unauthenticate(
+        "Extension is not authorized with transientBug"
+      )
     );
-    dispatch(actions.hideLoader());
+    dispatch(popupActions.hideLoader());
     return;
   }
 
@@ -106,7 +111,7 @@ const save = () => async (dispatch: ThunkableDispatch<any>) => {
 
   debug("Changing Icon");
   await changeIcon(BOOKMARK_ICON_FILL);
-  dispatch(actions.changeIcon(BOOKMARK_ICON_FILL));
+  dispatch(popupActions.changeIcon(BOOKMARK_ICON_FILL));
   debug("Icon changed");
 
   debug("Merging and updating local tag storage");
@@ -115,7 +120,7 @@ const save = () => async (dispatch: ThunkableDispatch<any>) => {
   debug("Tags updated", tags);
 
   dispatch(actions.setBookmark(bookmarkData));
-  dispatch(actions.hideLoader());
+  dispatch(popupActions.hideLoader());
 };
 
 const update = () => (dispatch: ThunkableDispatch<any>, state: State) => {
