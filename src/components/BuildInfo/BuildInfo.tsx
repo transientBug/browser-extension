@@ -1,7 +1,7 @@
 import React from "react";
 
-import { version as VERSION } from "../../package.json";
-import Alert from "./Alert";
+import { version as VERSION } from "../../../package.json";
+import Alert from "../Alert";
 
 const ENV = process.env.NODE_ENV;
 

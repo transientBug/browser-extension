@@ -3,11 +3,11 @@ import React from "react";
 import tw from "tailwind.macro";
 import { css } from "emotion/macro";
 
-import { Settings, SettingsSetter } from "./BrowserSettingsProvider/types";
+import { Settings, SettingsSetter } from "../BrowserSettingsProvider/types";
 
-import Alert from "./Alert";
-import DebugFilterList from "./DebugFilterList";
-import endpoints from "../endpoints";
+import Alert from "../Alert";
+import DebugFilterList from "../DebugFilterList";
+import endpoints from "../../endpoints";
 
 const H2 = tw.h2`
   block text-gray-700 text-xl3 font-bold mb-2

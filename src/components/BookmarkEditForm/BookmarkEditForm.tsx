@@ -7,7 +7,7 @@ import tw from "tailwind.macro";
 import CreatableSelect from "react-select/creatable";
 import { ValueType } from "react-select/src/types";
 
-import { Bookmark } from "../api/types";
+import { Bookmark } from "../../api/types";
 
 const Form = tw.form`
   mb-6 p-4

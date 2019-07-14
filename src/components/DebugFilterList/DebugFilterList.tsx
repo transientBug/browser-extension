@@ -3,7 +3,7 @@ import React, { useCallback } from "react";
 import tw from "tailwind.macro";
 import { css } from "emotion/macro";
 
-import debugFactory, { debugInstances, DebugData } from "../debug";
+import debugFactory, { debugInstances, DebugData } from "../../debug";
 const debug = debugFactory.extend("components").extend("DebugFilterList");
 
 interface DebugListProps {
