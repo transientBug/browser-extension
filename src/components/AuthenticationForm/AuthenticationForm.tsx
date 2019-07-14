@@ -2,8 +2,8 @@ import React from "react";
 
 import tw from "tailwind.macro";
 
-import Button from "./Button";
-import Alert from "./Alert";
+import Button from "../Button";
+import Alert from "../Alert";
 
 const Form = tw.form`
   mb-4
