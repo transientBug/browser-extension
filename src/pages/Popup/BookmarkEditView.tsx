@@ -1,5 +1,7 @@
 import React from "react";
 
+import tw from "tailwind.macro";
+
 import Navbar, { NavButton } from "../../components/Navbar";
 import BookmarkEditForm from "../../components/BookmarkEditForm";
 import { SaveIcon, LinkIcon } from "../../components/Icons";
@@ -12,6 +14,8 @@ const debug: debug.IDebugger = debugFactory
   .extend("page")
   .extend("Popup")
   .extend("BookmarkEditView");
+
+const Content = tw.div`p-4`;
 
 const BookmarkEditView: React.FC = () => {
   const [{ tags, bookmark }, dispatch] = useStore();
@@ -39,11 +43,13 @@ const BookmarkEditView: React.FC = () => {
           )
         }}
       </Navbar>
-      <BookmarkEditForm
-        autocompleteTags={tags}
-        bookmark={bookmark}
-        onUpdate={bookmark => dispatch(actions.setBookmark(bookmark))}
-      />
+      <Content>
+        <BookmarkEditForm
+          autocompleteTags={tags}
+          bookmark={bookmark}
+          onUpdate={bookmark => dispatch(actions.setBookmark(bookmark))}
+        />
+      </Content>
     </>
   );
 };

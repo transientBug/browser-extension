@@ -10,7 +10,6 @@ const PopupContainer = styled.div`
    *
    * https://drafts.csswg.org/css-logical/#intro
    */
-
   inline-size: 700px;
   max-inline-size: 700px;
 
