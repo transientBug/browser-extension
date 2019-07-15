@@ -1,44 +1,46 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Bookmarking the www-bugs
 
-## Available Scripts
+The officially supported Firefox and Chrome extension for the transientBug
+bookmarking service.
 
-In the project directory, you can run:
+[![Build Status](https://travis-ci.org/transientBug/browser-extension.svg?branch=master)](https://travis-ci.org/transientBug/browser-extension)
 
-### `npm start`
+## Development
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Known MVP work:
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
+- [ ] Finish filling this & other docs out
+- [ ] Add a `bundle` or `package` command for building the packages to upload
+- [ ] Tests where appropriate
+- [ ] Standardize styling of add on
+- [ ] Rich markdown previews in descriptions with Slate.js
 
-### `npm test`
+### Getting Started
 
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Notable things:
 
-### `npm run build`
+- Debug flags are editable in the preferences when built with the environment variable `REACT_APP_DEBUGGABLE=true`.
+- `yarn build` or `npm run build` will build/bundle the extension into `/build`
+- `yarn storybook` or `npm run storybook` will start a storybook which has most of the components featured
+  - Stories live along side their components under `<component name>.stories.js` files.
 
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
+To contribute, please fork this repo, make your changes and submit a PR back to this repository.
 
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
+### Firefox
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+To load the extension into Firefox temporarily, visit `about:debugging` or see [this MDN doc](https://developer.mozilla.org/en-US/Add-ons/WebExtensions/Temporary_Installation_in_Firefox).
 
-### `npm run eject`
+### Chrome
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+To load the extension into Chrome temporarily, visit `chrome://extensions` or see [this Google Dev doc](https://developer.chrome.com/extensions).
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+This extension makes use of the [Mozila WebExtension Polyfill](https://github.com/mozilla/webextension-polyfill) to enable the use of the newer Promise based WebExtension APIs which are unavailable in Chrome. There could be edge cases which arise only in Chrome as a result of this.
 
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+## Credits
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+- Bookmark Icons from the [Google Material Design](https://material.io/icons/) project.
+- Save & Link Icons from [Zondicons](http://www.zondicons.com/).
 
-## Learn More
+## License
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+MIT
