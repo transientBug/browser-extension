@@ -1,10 +1,14 @@
 import React, { useCallback } from "react";
 
 import tw from "tailwind.macro";
-import { css } from "emotion/macro";
+
+import Switch from "../../components/Switch";
 
 import debugFactory, { debugInstances, DebugData } from "../../debug";
 const debug = debugFactory.extend("components").extend("DebugFilterList");
+
+const LabelContainer = tw.label`md:w-2/3 flex items-center font-bold`;
+const LabelText = tw.span`text-sm`;
 
 interface DebugListProps {
   onChange: (debugFilter: string[]) => unknown;
@@ -18,11 +22,11 @@ const DebugFilterList: React.FC<DebugListProps> = ({
 }) => {
   const onCheck = useCallback(
     (e, instance) => {
-      debug("setting", instance.namespace, e.target.checked);
+      debug("setting", instance.namespace, e);
 
       const newFilter = [...(debugFilter || [])];
 
-      if (e.target.checked) newFilter.push(instance.debugFlag);
+      if (e) newFilter.push(instance.debugFlag);
       else newFilter.splice(newFilter.indexOf(instance.debugFlag), 1);
 
       onChange(newFilter);
@@ -34,28 +38,13 @@ const DebugFilterList: React.FC<DebugListProps> = ({
     <>
       {debugInstances.map((instance: DebugData, idx: number) => (
         <>
-          <label
-            className={css`
-              ${tw`md:w-2/3 block font-bold`}
-            `}
-            key={idx}
-          >
-            <input
-              className={css`
-                ${tw`mr-2 leading-tight`}
-              `}
-              type="checkbox"
+          <LabelContainer key={idx}>
+            <Switch
               checked={debugFilter.includes(instance.debugFlag)}
               onChange={e => onCheck(e, instance)}
             />
-            <span
-              className={css`
-                ${tw`text-sm`}
-              `}
-            >
-              {instance.namespace}
-            </span>
-          </label>
+            <LabelText>{instance.namespace}</LabelText>
+          </LabelContainer>
           {instance.description}
         </>
       ))}
