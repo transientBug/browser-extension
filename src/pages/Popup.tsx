@@ -7,7 +7,6 @@ import BookmarkEditView from "./Popup/BookmarkEditView";
 
 import PopupContainer from "../components/PopupContainer";
 
-import { operations as authOperations } from "../ducks/auth";
 import { operations as bookmarkOperations } from "../ducks/bookmarks";
 import useStore, { Store } from "./Popup/store";
 

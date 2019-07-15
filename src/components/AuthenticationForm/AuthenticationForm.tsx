@@ -4,18 +4,7 @@ import tw from "tailwind.macro";
 
 import Button from "../Button";
 import Alert from "../Alert";
-
-const Form = tw.form`
-  mb-4
-`;
-
-const Fieldset = tw.fieldset`
-  mb-4
-`;
-
-const Legend = tw.legend`
-  block text-gray-700 text-l font-bold mb-2
-`;
+import Form, { Fieldset, Legend } from "../Forms";
 
 const P = tw.p`
   my-1

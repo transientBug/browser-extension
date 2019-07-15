@@ -1,7 +1,7 @@
 import React from "react";
 
 import tw from "tailwind.macro";
-import { css } from "emotion/macro";
+import styled from "@emotion/styled/macro";
 
 import { Settings, SettingsSetter } from "../BrowserSettingsProvider/types";
 
@@ -9,24 +9,40 @@ import Alert from "../Alert";
 import DebugFilterList from "../DebugFilterList";
 import endpoints from "../../endpoints";
 
+import Form, { Fieldset, Legend, Input } from "../Forms";
+
 const H2 = tw.h2`
   block text-gray-700 text-xl3 font-bold mb-2
 `;
 
-const Form = tw.form`
-  mb-4
+const Grid = tw.div`flex mb-4`;
+
+const Column = styled.div`
+  ${tw`w-1/2`}
+
+  :not(:first-child), :not(:last-child) {
+    ${tw`px-1`}
+  }
+
+  :first-child {
+    ${tw`pr-1`}
+  }
+
+  :last-child {
+    ${tw`pl-1`}
+  }
 `;
 
-const Fieldset = tw.fieldset`
-  mb-4 flex flex-col content-between
-`;
+const ListSelector = tw.ul`flex flex-col`;
+const ListSelectorItem = styled.li`
+  :first-child {
+    ${tw`rounded-t`}
+  }
 
-const Legend = tw.legend`
-  block text-gray-700 text-sm font-bold mb-2
-`;
-
-const inputStyle = css`
-  ${tw`shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline`}
+  :last-child {
+    ${tw`rounded-b`}
+  }
+  ${tw`relative -mb-px block border p-4 border-gray hover:bg-gray-100 hover:cursor-pointer`}
 `;
 
 interface DevOptionsFormProps {
@@ -34,7 +50,6 @@ interface DevOptionsFormProps {
   update: SettingsSetter;
 }
 
-// TODO: clean this up with the styling
 const DevOptionsForm: React.FC<DevOptionsFormProps> = ({
   settings,
   update
@@ -45,66 +60,53 @@ const DevOptionsForm: React.FC<DevOptionsFormProps> = ({
     <Alert>
       {{
         title: "Development Build",
-        message: `This build has debugging and development tools and settings enabled. Please tread carefully.`
+        message: `This build has development settings enabled. Please tread carefully.`
       }}
     </Alert>
 
-    <Fieldset>
-      <Legend>Endpoint</Legend>
+    <H2>Endpoint Settings</H2>
 
-      <div
-        className={css`
-          ${tw`flex mb-4`}
-        `}
-      >
-        <div
-          className={css`
-            ${tw`w-1/2`}
-          `}
-        >
-          <input
+    <Grid>
+      <Column>
+        <Fieldset>
+          <Legend>URL</Legend>
+          <Input
             type="url"
-            className={inputStyle}
             value={settings.endpoint}
-            onChange={e => update({ endpoint: e.target.value })}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              update({ endpoint: e.target.value })
+            }
             placeholder="Endpoint URL"
           />
-          <input
+        </Fieldset>
+        <Fieldset>
+          <Legend>OAuth Client ID</Legend>
+          <Input
             type="text"
-            className={inputStyle}
             value={settings.clientId}
-            onChange={e => update({ clientId: e.target.value })}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              update({ clientId: e.target.value })
+            }
             placeholder="Client ID"
           />
-        </div>
-        <div
-          className={css`
-            ${tw`w-1/2`}
-          `}
-        >
-          <ul
-            className={css`
-              ${tw`flex flex-col`}
-            `}
-          >
-            {endpoints.map((endpointObj, idx) => (
-              <li
-                key={idx}
-                className={css`
-                  ${tw`relative -mb-px block border p-4 border-gray hover:bg-gray-100 hover:cursor-pointer`}
-                `}
-                onClick={() => {
-                  const { endpoint, clientId } = endpointObj;
-                  update({ endpoint, clientId, accessToken: "" });
-                }}
-              >
-                {endpointObj.name}
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
-    </Fieldset>
+        </Fieldset>
+      </Column>
+      <Column>
+        <H2>Predefined Endpoints</H2>
+        <ListSelector>
+          {endpoints.map((endpointObj, idx) => (
+            <ListSelectorItem
+              onClick={() => {
+                const { endpoint, clientId } = endpointObj;
+                update({ endpoint, clientId, accessToken: "" });
+              }}
+            >
+              {endpointObj.name}
+            </ListSelectorItem>
+          ))}
+        </ListSelector>
+      </Column>
+    </Grid>
 
     <Fieldset>
       <Legend>Debug Settings</Legend>
