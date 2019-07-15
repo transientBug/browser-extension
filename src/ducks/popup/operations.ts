@@ -1,42 +1,29 @@
-/* global browser */
-import actions from "./actions";
-import { ThunkableDispatch } from "../useImmerReducer";
+// const BOOKMARK_ICON_FILL = "../icons/ic_bookmark_black_24dp_2x.png";
 
-import { flatten, take, uniq } from "lodash";
+// const changeIcon = async (icon: string) => {
+//   const activeTab = await currentTab();
 
-import { State } from "./state";
+//   if (!activeTab) return;
 
-import debugFactory from "../../debug";
-const debug: debug.IDebugger = debugFactory
-  .extend("operations")
-  .extend("bookmarks");
+//   browser.pageAction.setIcon({ tabId: activeTab.id as number, path: icon });
+// };
 
-const BOOKMARK_ICON_FILL = "../icons/ic_bookmark_black_24dp_2x.png";
+// const mergeTags = (existingTags?: string[], newTags?: string[]) => {
+//   const mergedTags = (existingTags || []).concat(newTags || []);
 
-const changeIcon = async (icon: string) => {
-  const activeTab = await currentTab();
+//   return take(uniq(flatten(mergedTags)), 200);
+// };
 
-  if (!activeTab) return;
+// const currentTab = async (): Promise<browser.tabs.Tab> => {
+//   const tabs = await browser.tabs.query({
+//     active: true,
+//     windowId: browser.windows.WINDOW_ID_CURRENT
+//   });
 
-  browser.pageAction.setIcon({ tabId: activeTab.id as number, path: icon });
-};
+//   if (tabs.length < 1)
+//     throw new Error("No active tabs found, can't bookmark undefined!");
 
-const mergeTags = (existingTags?: string[], newTags?: string[]) => {
-  const mergedTags = (existingTags || []).concat(newTags || []);
-
-  return take(uniq(flatten(mergedTags)), 200);
-};
-
-const currentTab = async (): Promise<browser.tabs.Tab> => {
-  const tabs = await browser.tabs.query({
-    active: true,
-    windowId: browser.windows.WINDOW_ID_CURRENT
-  });
-
-  if (tabs.length < 1)
-    throw new Error("No active tabs found, can't bookmark undefined!");
-
-  return tabs[0];
-};
+//   return tabs[0];
+// };
 
 export default {};
