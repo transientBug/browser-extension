@@ -7,7 +7,8 @@ import ActionTypes from "./types";
 const reducers: ReducerMap<State, Actions> = {
   [ActionTypes.SetBookmark]: (draft, action) => {
     draft.bookmark = action.payload.bookmark;
-  }
+  },
+  [ActionTypes.OpenInTB]: () => {}
 };
 
 export default reducers;

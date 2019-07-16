@@ -36,7 +36,7 @@ const BookmarkEditView: React.FC = () => {
               <NavButton onClick={() => dispatch(operations.update())}>
                 <SaveIcon />
               </NavButton>
-              <NavButton onClick={() => console.log("open-tb")}>
+              <NavButton onClick={() => dispatch(operations.open())}>
                 <LinkIcon />
               </NavButton>
             </>

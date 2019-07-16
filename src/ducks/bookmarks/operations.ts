@@ -57,10 +57,10 @@ const loadingMessages = [
 ];
 
 const save = () => async (dispatch: ThunkableDispatch<any>) => {
-  debug("Starting save process");
+  debug("starting save process");
   dispatch(popupActions.showLoader(sample(loadingMessages)));
 
-  debug("Fetching browser extension settings");
+  debug("fetching browser extension settings");
 
   const { accessToken, tags: existingTags = [] } = await getSettings([
     "accessToken",
@@ -76,12 +76,11 @@ const save = () => async (dispatch: ThunkableDispatch<any>) => {
   dispatch(popupActions.updateTags(existingTags));
   dispatch(authActions.authenticate(accessToken));
 
-  debug("Saving bookmark ...");
-  dispatch(popupActions.showLoader("Saving bookmark ..."));
+  debug("saving bookmark ...");
 
   const activeTab = await currentTab();
 
-  debug("Saving tab", activeTab);
+  debug("current tab", activeTab);
 
   let bookmarkData;
   try {
@@ -93,7 +92,7 @@ const save = () => async (dispatch: ThunkableDispatch<any>) => {
     bookmarkData.url = bookmarkData["uri"];
     delete bookmarkData["uri"];
   } catch (e) {
-    debug("Error while talking to API", e);
+    debug("ERROR: while talking to API", e);
     if (!(e instanceof AuthError)) throw e;
 
     await setSettings({ accessToken: "" });
@@ -109,28 +108,48 @@ const save = () => async (dispatch: ThunkableDispatch<any>) => {
 
   debug("API response", bookmarkData);
 
-  debug("Changing Icon");
+  debug("changing Icon");
   await changeIcon(BOOKMARK_ICON_FILL);
   dispatch(popupActions.changeIcon(BOOKMARK_ICON_FILL));
-  debug("Icon changed");
+  debug("icon changed");
 
-  debug("Merging and updating local tag storage");
-  const tags = mergeTags(existingTags as string[], bookmarkData.tags);
+  debug(
+    "merging and updating local tag storage",
+    existingTags,
+    bookmarkData.tags
+  );
+  const tags = mergeTags(existingTags, bookmarkData.tags);
   await setSettings({ tags });
-  debug("Tags updated", tags);
+  debug("tags updated", tags);
 
   dispatch(actions.setBookmark(bookmarkData));
   dispatch(popupActions.hideLoader());
 };
 
 const update = () => (dispatch: ThunkableDispatch<any>, state: State) => {
-  debug("Starting to update the bookmark with tB ...");
-
   // Save in the background because otherwise the promise won't resolve before the window context is closed, leading the the finall request not finishing potentially.
   // This isn't without its own flaws and that same issue however sending a message between browser contexts is a lot faster than to an external API
 
   if (!state.bookmark || !state.bookmark.id) return;
+
+  debug("starting to update the bookmark with tB ...");
   browser.runtime.sendMessage({ action: "save", data: state.bookmark });
 };
 
-export default { save, update };
+const open = () => async (dispatch: ThunkableDispatch<any>, state: State) => {
+  if (!state.bookmark || !state.bookmark.id) return;
+
+  debug("opening in TB ...");
+
+  const {
+    bookmark: { id }
+  } = state;
+
+  const { endpoint } = await getSettings(["endpoint"]);
+
+  const url = new URL(`/bookmarks/${id}`, endpoint);
+
+  browser.tabs.create({ url: url.toString() });
+};
+
+export default { save, update, open };
