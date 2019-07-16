@@ -1,8 +1,5 @@
 import React from "react";
 
-import tw from "tailwind.macro";
-import styled from "@emotion/styled/macro";
-
 import { Settings, SettingsSetter } from "../BrowserSettingsProvider/types";
 
 import Alert from "../Alert";
@@ -10,49 +7,20 @@ import DebugFilterList from "../DebugFilterList";
 import endpoints from "../../endpoints";
 
 import Form, { Fieldset, Legend, Input } from "../Forms";
-
-const H2 = tw.h2`
-  block text-gray-700 text-xl3 font-bold mb-2
-`;
-
-const Grid = tw.div`flex mb-4`;
-
-const Column = styled.div`
-  ${tw`w-1/2`}
-
-  :not(:first-child), :not(:last-child) {
-    ${tw`px-1`}
-  }
-
-  :first-child {
-    ${tw`pr-1`}
-  }
-
-  :last-child {
-    ${tw`pl-1`}
-  }
-`;
-
-const ListSelector = tw.ul`flex flex-col`;
-const ListSelectorItem = styled.li`
-  :first-child {
-    ${tw`rounded-t`}
-  }
-
-  :last-child {
-    ${tw`rounded-b`}
-  }
-  ${tw`relative -mb-px block border p-4 border-gray hover:bg-gray-100 hover:cursor-pointer`}
-`;
+import P, { H2 } from "../Text";
+import SelectionList, { SelectionItem } from "../SelectionList";
+import Grid, { Column } from "../Grid";
 
 interface DevOptionsFormProps {
   settings: Settings;
   update: SettingsSetter;
+  redirectURL?: string;
 }
 
 const DevOptionsForm: React.FC<DevOptionsFormProps> = ({
   settings,
-  update
+  update,
+  redirectURL
 }) => (
   <Form>
     <H2>Development Settings</H2>
@@ -65,6 +33,12 @@ const DevOptionsForm: React.FC<DevOptionsFormProps> = ({
     </Alert>
 
     <H2>Endpoint Settings</H2>
+    <P>
+      Setting the Endpoint URL and Client ID allows you to point the extension
+      at a different API (or proxy). You can also choose from a list of
+      predefined endpoints to the right, making switching between staging and
+      production quick. Changing these will log you out however.
+    </P>
 
     <Grid>
       <Column>
@@ -92,22 +66,37 @@ const DevOptionsForm: React.FC<DevOptionsFormProps> = ({
         </Fieldset>
       </Column>
       <Column>
-        <H2>Predefined Endpoints</H2>
-        <ListSelector>
-          {endpoints.map((endpointObj, idx) => (
-            <ListSelectorItem
-              onClick={() => {
-                const { endpoint, clientId } = endpointObj;
-                update({ endpoint, clientId, accessToken: "" });
-              }}
-            >
-              {endpointObj.name}
-            </ListSelectorItem>
-          ))}
-        </ListSelector>
+        <Fieldset>
+          <Legend>Predefined Endpoints</Legend>
+          <SelectionList>
+            {endpoints.map((endpointObj, idx) => (
+              <SelectionItem
+                onClick={() => {
+                  const { endpoint, clientId } = endpointObj;
+                  update({ endpoint, clientId, accessToken: "" });
+                }}
+              >
+                {endpointObj.name}
+              </SelectionItem>
+            ))}
+          </SelectionList>
+        </Fieldset>
       </Column>
     </Grid>
 
+    <H2>Oauth Settings</H2>
+    <Fieldset>
+      <Legend>OAuth Redirect URL</Legend>
+      <P>Use this to register the extension with transientBug.</P>
+
+      <Input type="text" value={redirectURL} disabled />
+    </Fieldset>
+
+    <H2>Debugging & Logging</H2>
+    <P>
+      These switches toggle the logging within the extension, ranging from
+      individudal pages, the API interactions or the whole extension.
+    </P>
     <Fieldset>
       <Legend>Debug Settings</Legend>
 

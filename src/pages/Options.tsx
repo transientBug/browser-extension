@@ -1,5 +1,4 @@
 /* global browser */
-
 import React, { useContext } from "react";
 
 import tw from "tailwind.macro";
@@ -20,6 +19,8 @@ const Wrapper = styled.div`
   ${tw`w-full bg-white shadow-md rounded px-8 pt-6 pb-8`}
 `;
 
+const redirectURL = browser.identity.getRedirectURL();
+
 const Options: React.FC = () => {
   const settings = useContext(BrowserSettingsContext);
   const updater = useContext(BrowserSettingsUpdateContext);
@@ -37,7 +38,13 @@ const Options: React.FC = () => {
 
       <BuildInfo temporaryInstall={settings.temporaryInstall} />
 
-      {DEBUGABLE && <DevOptionsForm settings={settings} update={updater} />}
+      {DEBUGABLE && (
+        <DevOptionsForm
+          settings={settings}
+          update={updater}
+          redirectURL={redirectURL}
+        />
+      )}
     </Wrapper>
   );
 };
