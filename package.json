@@ -36,7 +36,7 @@
     "storybook": "start-storybook -p 9009 -s public",
     "build-storybook": "build-storybook -s public",
     "lint:addon": "addon-linter build --self-hosted",
-    "package": "web-ext build --source-dir build --overwrite-dest"
+    "package": "yarn build && yarn web-ext build --source-dir build --overwrite-dest"
   },
   "eslintConfig": {
     "extends": "react-app",
