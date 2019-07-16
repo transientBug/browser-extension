@@ -1,7 +1,12 @@
-import tw from "tailwind.macro";
+import styled from "@emotion/styled/macro";
 
-const CenteredContent = tw.div`
-  self-center m-auto
+const CenteredContent = styled.div`
+  flex-grow: 1;
+  height: 100%;
+
+  display: grid;
+  place-items: center;
+  place-content: center;
 `;
 
 export default CenteredContent;

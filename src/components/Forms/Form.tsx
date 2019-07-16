@@ -1,6 +1,5 @@
 import tw from "tailwind.macro";
 
-// Bookmark Edit Form
 const Form = tw.form`
   mb-6
 `;
