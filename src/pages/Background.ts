@@ -1,7 +1,14 @@
 /* global browser */
 
+import { take, uniq, flatten } from "lodash";
+
 import { Bookmark } from "../api/types";
 import API from "../api";
+
+import {
+  getSettings,
+  setSettings
+} from "../components/BrowserSettingsProvider";
 
 import debugFactoryOG from "debug";
 import debugFactory from "../debug";
@@ -117,16 +124,35 @@ async function login() {
   debug("oauth done", accessToken);
 }
 
+const mergeTags = (existingTags?: string[], newTags?: string[]) => {
+  const mergedTags = (existingTags || []).concat(newTags || []);
+
+  return take(uniq(flatten(mergedTags)), 200);
+};
+
 // TODO: retype away from any here
-function onMessageHandler(message: any) {
+async function onMessageHandler(message: any) {
+  debug("got message", message);
+
   switch (message.action) {
     case "save": {
-      debug("saving in background", message.data);
-
       const { id, ...bookmark } = message.data as Partial<Bookmark>;
       if (!id) return;
 
-      API.Bookmarks.update(id, bookmark);
+      debug("saving in background", message.data);
+
+      const { tags: existingTags = [] } = await getSettings(["tags"]);
+
+      const bookmarkData = await API.Bookmarks.update(id, bookmark);
+
+      debug(
+        "merging and updating local tag storage",
+        existingTags,
+        bookmarkData.tags
+      );
+      const tags = mergeTags(existingTags, bookmarkData.tags);
+      await setSettings({ tags });
+      debug("tags updated", tags);
 
       break;
     }
@@ -137,7 +163,7 @@ function onMessageHandler(message: any) {
     }
 
     default: {
-      debug("unknown message", message);
+      debug("ERROR: unknown message", message);
       break;
     }
   }
