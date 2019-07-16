@@ -1,14 +1,9 @@
 import React from "react";
 
-import tw from "tailwind.macro";
-
-import Button from "../Button";
+import { FittedButton } from "../Button";
 import Alert from "../Alert";
 import Form, { Fieldset, Legend } from "../Forms";
-
-const P = tw.p`
-  my-1
-`;
+import P from "../Text";
 
 interface AuthenticatonFormProps {
   accessToken?: string;
@@ -32,15 +27,28 @@ const AuthenticationForm: React.FC<AuthenticatonFormProps> = ({
             You're not logged in yet! Click the login button below to start the
             process.
           </P>
-          <Button onClick={onLogin}>Log in</Button>
+          <FittedButton onClick={onLogin}>Log in</FittedButton>
           <Alert>
             {{
-              title: "Note",
-              message: `This will open a new window to transientBug through
-            which you'll be asked to authorize this application. If you've
-            authorized this application in the past, this dialogue may not appear.
-            You may unauthorize this application at anytime through your
-            transientBug settings.`
+              title: "What this buttons about ...",
+              message: (
+                <>
+                  <P>
+                    This will open a new window to transientBug through which
+                    you'll be asked to authorize this application.
+                  </P>
+                  <P>
+                    If you've authorized this application in the past, this
+                    window may not open, however this message should disappear
+                    and be replaced with a logout button pretty much
+                    immediately.
+                  </P>
+                  <P>
+                    You may unauthorize this application at anytime through your
+                    transientBug settings.
+                  </P>
+                </>
+              )
             }}
           </Alert>
         </>
@@ -49,7 +57,7 @@ const AuthenticationForm: React.FC<AuthenticatonFormProps> = ({
       {accessToken && (
         <>
           <P>You're currently logged in!</P>
-          <Button onClick={onLogout}>Log out</Button>
+          <FittedButton onClick={onLogout}>Log out</FittedButton>
         </>
       )}
     </Fieldset>
