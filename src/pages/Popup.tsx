@@ -14,7 +14,7 @@ import debugFactory from "../debug";
 const debug: debug.IDebugger = debugFactory.extend("page").extend("Popup");
 
 const login = () => {
-  debug("Starting login process ...");
+  debug("starting login process ...");
 
   // TODO: Save the active tab so that when login is successful, the save still
   // happens, the tab can be switched back to and the popup reopened.
@@ -43,7 +43,7 @@ const PopupContents: React.FC = () => {
 
   return (
     <>
-      {loading && <LoadingView />}
+      {loading && <LoadingView message={state.loading.message} />}
       {unauthed && <UnauthedView onLogin={login} />}
       {editing && <BookmarkEditView />}
     </>
