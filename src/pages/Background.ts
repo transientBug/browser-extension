@@ -10,11 +10,11 @@ import {
   setSettings
 } from "../components/BrowserSettingsProvider";
 
-import debugFactoryOG from "debug";
-import debugFactory from "../debug";
-const debug: debug.IDebugger = debugFactory.extend("page").extend("Background");
-
-const debugable = process.env.REACT_APP_DEBUGABLE;
+import endpoints from "../endpoints";
+import debugFactory, { debugFactoryOG, debugable } from "../debug";
+const debug: debug.IDebugger = debugFactory
+  .extend("pages")
+  .extend("Background");
 
 /**
  * Change event listener for the storage object so that the debug filter can get
@@ -58,13 +58,28 @@ async function setupDevListener() {
  * I am lazy
  */
 async function afterInstall(details: any) {
-  await browser.storage.local.set({
+  await setSettings({
     temporaryInstall: details.temporary
   });
 
   debugFactoryOG.disable();
 
-  if (!debugable) return;
+  if (!debugable) {
+    // yoloth
+    const production = endpoints.find(e => e.name === "Production");
+
+    if (!production)
+      throw new Error(
+        "Production endpoint settings not found! This isn't good!"
+      );
+
+    await setSettings({
+      endpoint: production.endpoint,
+      clientId: production.clientId
+    });
+
+    return;
+  }
 
   await setupDevListener();
 

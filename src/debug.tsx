@@ -1,8 +1,9 @@
 import React from "react";
 import debugFactoryOG from "debug";
 
-export { debugFactoryOG };
 const debugFactory: debug.IDebugger = debugFactoryOG("transientBug");
+
+const debugable = process.env.REACT_APP_DEBUGABLE === "true";
 
 export type DebugData = {
   namespace: string;
@@ -10,7 +11,7 @@ export type DebugData = {
   debugFlag: string;
 };
 
-export const debugInstances: DebugData[] = [
+const debugInstances: DebugData[] = [
   {
     namespace: "API Requests",
     description: ``,
@@ -44,3 +45,4 @@ export const debugInstances: DebugData[] = [
 ];
 
 export default debugFactory;
+export { debugInstances, debugFactoryOG, debugable };

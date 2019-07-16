@@ -13,7 +13,7 @@ import BrowserSettingsProvider, {
   BrowserSettingsUpdateContext
 } from "../components/BrowserSettingsProvider";
 
-const DEBUGABLE = process.env.REACT_APP_DEBUGABLE;
+import { debugable } from "../debug";
 
 const Wrapper = styled.div`
   ${tw`w-full bg-white shadow-md rounded px-8 pt-6 pb-8`}
@@ -38,7 +38,7 @@ const Options: React.FC = () => {
 
       <BuildInfo temporaryInstall={settings.temporaryInstall} />
 
-      {DEBUGABLE && (
+      {debugable && (
         <DevOptionsForm
           settings={settings}
           update={updater}
