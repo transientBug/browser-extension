@@ -5,17 +5,9 @@ class APIError extends Error {
     super(...args);
 
     this.status = status;
-
-    Error.captureStackTrace(this, APIError);
   }
 }
 
-class AuthError extends Error {
-  constructor(...args: any[]) {
-    super(...args);
-
-    Error.captureStackTrace(this, AuthError);
-  }
-}
+class AuthError extends Error {}
 
 export { APIError, AuthError };
