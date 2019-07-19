@@ -89,7 +89,7 @@ const DevOptionsForm: React.FC<DevOptionsFormProps> = ({
       <Legend>OAuth Redirect URL</Legend>
       <P>Use this to register the extension with transientBug.</P>
 
-      <Input type="text" value={redirectURL} disabled />
+      <Input type="text" value={redirectURL} />
     </Fieldset>
 
     <H2>Debugging & Logging</H2>
