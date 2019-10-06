@@ -7,17 +7,18 @@ bookmarking service.
 
 ## Development
 
-Known MVP work:
+This extension was scaffolded out using [Create-React-App](https://create-react-app.dev/) and is developed in [TypeScript](https://www.typescriptlang.org/). Styling is done with [emotion](https://emotion.sh/docs/introduction) and [Tailwind CSS](https://tailwindcss.com/) through the [Tailwind Babel macro](https://github.com/bradlc/babel-plugin-tailwind-components). State is managed through a light-weight (and probably way too "clever") immutable store modeled after Redux & friends and built with React Hooks, Contexts and [Immer.js](https://github.com/immerjs/immer); Actions and reducers are organized in a [ducks](https://www.freecodecamp.org/news/scaling-your-redux-app-with-ducks-6115955638be/) like pattern. All of this lives in `src/`.
 
-- [ ] Finish filling this & other docs out
-- [ ] Add a `bundle` or `package` command for building the packages to upload
-- [ ] Tests where appropriate
-- [ ] Standardize styling of add on
-- [ ] Rich markdown previews in descriptions with Slate.js
+### How to Build
 
-### Getting Started
+Thanks to CRA and `web-ext`, building the extension is as easy as:
 
-Notable things:
+```shell
+yarn install
+yarn package
+```
+
+### Notable Things
 
 - Debug flags are editable in the preferences when built with the environment variable `REACT_APP_DEBUGGABLE=true`.
 - `yarn build` or `npm run build` will build/bundle the extension into `/build`
@@ -26,11 +27,24 @@ Notable things:
 
 To contribute, please fork this repo, make your changes and submit a PR back to this repository.
 
+### Tasks
+
+Known MVP work:
+
+- [ ] Finish filling this & other docs out
+- [x] Add a `bundle` or `package` command for building the packages to upload
+- [ ] Tests where appropriate
+- [ ] Standardize styling of add on
+- [ ] Rich markdown previews in descriptions with Slate.js
+- [ ] Transition from Travis-CI to GitHub Actions
+
 ### Firefox
 
 To load the extension into Firefox temporarily, visit `about:debugging` or see [this MDN doc](https://developer.mozilla.org/en-US/Add-ons/WebExtensions/Temporary_Installation_in_Firefox).
 
 ### Chrome
+
+_NOTE:_ Chrome support is a work in progress.
 
 To load the extension into Chrome temporarily, visit `chrome://extensions` or see [this Google Dev doc](https://developer.chrome.com/extensions).
 

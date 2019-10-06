@@ -1,6 +1,7 @@
 {
   "name": "transientbug-browser-extension",
   "version": "2.1.0",
+  "homepage": "https://github.com/transientBug/browser-extension",
   "private": true,
   "dependencies": {
     "@emotion/core": "^10.0.10",
@@ -32,7 +33,6 @@
     "prebuild": "tailwind build ./src/index.tailwind.css -c ./tailwind.config.js -o ./src/index.css",
     "build": "INLINE_RUNTIME_CHUNK=false react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject",
     "storybook": "start-storybook -p 9009 -s public",
     "build-storybook": "build-storybook -s public",
     "lint:addon": "addon-linter build --self-hosted",
