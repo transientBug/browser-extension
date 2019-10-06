@@ -31,10 +31,18 @@ To contribute, please fork this repo, make your changes and submit a PR back to 
 
 Known MVP work:
 
-- [ ] Finish filling this & other docs out
 - [x] Add a `bundle` or `package` command for building the packages to upload
 - [ ] Tests where appropriate
 - [ ] Standardize styling of add on
+
+Known Bugs:
+
+- [ ] Turbolinks and the like page loaders don't cause the page-action icon to change
+- [ ] Lots of tags causes the description box to move down while the page doesn't scroll
+
+Enhancements:
+
+- [ ] Fetching tags from tB's autocomplete endpoint (TODO: document)
 - [ ] Rich markdown previews in descriptions with Slate.js
 - [ ] Transition from Travis-CI to GitHub Actions
 
