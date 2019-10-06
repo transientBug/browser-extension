@@ -1,7 +1,6 @@
 {
   "name": "transientbug-browser-extension",
   "version": "2.1.0",
-  "homepage": "https://github.com/transientBug/browser-extension",
   "private": true,
   "dependencies": {
     "@emotion/core": "^10.0.10",
