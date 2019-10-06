@@ -1,6 +1,7 @@
 {
   "name": "transientbug-browser-extension",
   "version": "2.1.0",
+  "homepage": "https://github.com/transientBug/browser-extension",
   "private": true,
   "dependencies": {
     "@emotion/core": "^10.0.10",
@@ -11,19 +12,20 @@
     "@types/node": "12.0.7",
     "@types/react": "16.8.19",
     "@types/react-dom": "16.8.4",
+    "@types/react-select": "^3.0.0",
     "debug": "^4.1.1",
     "emotion": "^10.0.9",
     "immer": "^3.1.2",
     "lodash": "^4.17.11",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
-    "react-scripts": "3.0.1",
-    "react-select": "^2.4.3",
+    "react-select": "^3.0.4",
     "tailwind.macro": "^1.0.0-alpha.10",
     "tailwindcss": "^1.0.3",
     "typescript": "3.5.1",
     "use-immer": "^0.3.2",
-    "web-ext-types": "^3.1.0"
+    "web-ext-types": "^3.1.0",
+    "webextension-polyfill": "^0.4.0"
   },
   "scripts": {
     "prestart": "tailwind build ./src/index.tailwind.css -c ./tailwind.config.js -o ./src/index.css",
@@ -31,9 +33,10 @@
     "prebuild": "tailwind build ./src/index.tailwind.css -c ./tailwind.config.js -o ./src/index.css",
     "build": "INLINE_RUNTIME_CHUNK=false react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject",
     "storybook": "start-storybook -p 9009 -s public",
-    "build-storybook": "build-storybook -s public"
+    "build-storybook": "build-storybook -s public",
+    "lint:addon": "addon-linter build --self-hosted",
+    "package": "yarn build && yarn web-ext build --source-dir build --overwrite-dest"
   },
   "eslintConfig": {
     "extends": "react-app",
@@ -64,7 +67,8 @@
     "@storybook/addon-links": "^5.1.3",
     "@storybook/addons": "^5.1.3",
     "@storybook/react": "^5.1.3",
-    "@types/react-select": "^2.0.19",
-    "web-ext": "^3.0.0"
+    "web-ext": "^3.1.0",
+    "addons-linter": "^1.10.1",
+    "react-scripts": "3.0.1"
   }
 }

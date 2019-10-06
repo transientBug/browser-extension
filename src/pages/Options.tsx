@@ -1,29 +1,25 @@
 /* global browser */
-
 import React, { useContext } from "react";
 
 import tw from "tailwind.macro";
 import styled from "@emotion/styled/macro";
 
-import debugFactory from "../debug";
 import AuthenticationForm from "../components/AuthenticationForm";
 import DevOptionsForm from "../components/DevOptionsForm";
 import BuildInfo from "../components/BuildInfo";
 
-import "./Background";
-import "./Popup";
 import BrowserSettingsProvider, {
   BrowserSettingsContext,
   BrowserSettingsUpdateContext
 } from "../components/BrowserSettingsProvider";
 
-const DEBUGABLE = process.env.REACT_APP_DEBUGABLE;
-
-const debug = debugFactory.extend("pages").extend("Options");
+import { debugable } from "../debug";
 
 const Wrapper = styled.div`
   ${tw`w-full bg-white shadow-md rounded px-8 pt-6 pb-8`}
 `;
+
+const redirectURL = browser.identity.getRedirectURL();
 
 const Options: React.FC = () => {
   const settings = useContext(BrowserSettingsContext);
@@ -42,7 +38,13 @@ const Options: React.FC = () => {
 
       <BuildInfo temporaryInstall={settings.temporaryInstall} />
 
-      {DEBUGABLE && <DevOptionsForm settings={settings} update={updater} />}
+      {debugable && (
+        <DevOptionsForm
+          settings={settings}
+          update={updater}
+          redirectURL={redirectURL}
+        />
+      )}
     </Wrapper>
   );
 };

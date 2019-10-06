@@ -4,7 +4,7 @@
   "name": "transientBug",
   "version": "2.1.0",
   "description": "Allows for quick bookmarking of websites in transientBug",
-  "homepage_url": "https://github.com/transientBug/firefox-extension",
+  "homepage_url": "https://github.com/transientBug/browser-extension",
 
   "icons": {
     "48": "icons/bug_logo.png"

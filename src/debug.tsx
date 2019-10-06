@@ -1,8 +1,9 @@
 import React from "react";
 import debugFactoryOG from "debug";
 
-export { debugFactoryOG };
 const debugFactory: debug.IDebugger = debugFactoryOG("transientBug");
+
+const debugable = process.env.REACT_APP_DEBUGABLE === "true";
 
 export type DebugData = {
   namespace: string;
@@ -10,7 +11,12 @@ export type DebugData = {
   debugFlag: string;
 };
 
-export const debugInstances: DebugData[] = [
+const debugInstances: DebugData[] = [
+  {
+    namespace: "API Requests",
+    description: ``,
+    debugFlag: "transientBug:api*"
+  },
   {
     namespace: "Background Page",
     description: `Includes login and background saving functionality along with post-install setup.`,
@@ -31,7 +37,7 @@ export const debugInstances: DebugData[] = [
     description: (
       <p>
         Enables <b>ALL</b> debug logging in the extension. This can be noisy and
-        should be used as a last resort.
+        should be used as a last resort or in development settings.
       </p>
     ),
     debugFlag: "transientBug*"
@@ -39,3 +45,4 @@ export const debugInstances: DebugData[] = [
 ];
 
 export default debugFactory;
+export { debugInstances, debugFactoryOG, debugable };

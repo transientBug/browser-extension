@@ -1,44 +1,68 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Bookmarking the www-bugs
 
-## Available Scripts
+The officially supported Firefox and Chrome extension for the transientBug
+bookmarking service.
 
-In the project directory, you can run:
+[![Build Status](https://travis-ci.org/transientBug/browser-extension.svg?branch=master)](https://travis-ci.org/transientBug/browser-extension)
 
-### `npm start`
+## Development
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+This extension was scaffolded out using [Create-React-App](https://create-react-app.dev/) and is developed in [TypeScript](https://www.typescriptlang.org/). Styling is done with [emotion](https://emotion.sh/docs/introduction) and [Tailwind CSS](https://tailwindcss.com/) through the [Tailwind Babel macro](https://github.com/bradlc/babel-plugin-tailwind-components). State is managed through a light-weight (and probably way too "clever") immutable store modeled after Redux & friends and built with React Hooks, Contexts and [Immer.js](https://github.com/immerjs/immer); Actions and reducers are organized in a [ducks](https://www.freecodecamp.org/news/scaling-your-redux-app-with-ducks-6115955638be/) like pattern. All of this lives in `src/`.
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
+### How to Build
 
-### `npm test`
+Thanks to CRA and `web-ext`, building the extension is as easy as:
 
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```shell
+yarn install
+yarn package
+```
 
-### `npm run build`
+### Notable Things
 
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- Debug flags are editable in the preferences when built with the environment variable `REACT_APP_DEBUGGABLE=true`.
+- `yarn build` or `npm run build` will build/bundle the extension into `/build`
+- `yarn storybook` or `npm run storybook` will start a storybook which has most of the components featured
+  - Stories live along side their components under `<component name>.stories.js` files.
 
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
+To contribute, please fork this repo, make your changes and submit a PR back to this repository.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### Tasks
 
-### `npm run eject`
+Known MVP work:
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+- [x] Add a `bundle` or `package` command for building the packages to upload
+- [ ] Tests where appropriate
+- [ ] Standardize styling of add on
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Known Bugs:
 
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+- [ ] Turbolinks and the like page loaders don't cause the page-action icon to change
+- [ ] Lots of tags causes the description box to move down while the page doesn't scroll
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+Enhancements:
 
-## Learn More
+- [ ] Fetching tags from tB's autocomplete endpoint (TODO: document)
+- [ ] Rich markdown previews in descriptions with Slate.js
+- [ ] Transition from Travis-CI to GitHub Actions
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### Firefox
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+To load the extension into Firefox temporarily, visit `about:debugging` or see [this MDN doc](https://developer.mozilla.org/en-US/Add-ons/WebExtensions/Temporary_Installation_in_Firefox).
+
+### Chrome
+
+_NOTE:_ Chrome support is a work in progress.
+
+To load the extension into Chrome temporarily, visit `chrome://extensions` or see [this Google Dev doc](https://developer.chrome.com/extensions).
+
+This extension makes use of the [Mozila WebExtension Polyfill](https://github.com/mozilla/webextension-polyfill) to enable the use of the newer Promise based WebExtension APIs which are unavailable in Chrome. There could be edge cases which arise only in Chrome as a result of this.
+
+## Credits
+
+- Bookmark Icons from the [Google Material Design](https://material.io/icons/) project.
+- Save & Link Icons from [Zondicons](http://www.zondicons.com/).
+
+## License
+
+MIT

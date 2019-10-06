@@ -1,10 +1,20 @@
 /* global browser */
 
-import debugFactoryOG from "debug";
-import debugFactory from "../debug";
-const debug: debug.IDebugger = debugFactory.extend("page").extend("Background");
+import { take, uniq, flatten } from "lodash";
 
-const debugable = process.env.REACT_APP_DEBUGABLE;
+import { Bookmark } from "../api/types";
+import API from "../api";
+
+import {
+  getSettings,
+  setSettings
+} from "../components/BrowserSettingsProvider";
+
+import endpoints from "../endpoints";
+import debugFactory, { debugFactoryOG, debugable } from "../debug";
+const debug: debug.IDebugger = debugFactory
+  .extend("pages")
+  .extend("Background");
 
 /**
  * Change event listener for the storage object so that the debug filter can get
@@ -48,17 +58,32 @@ async function setupDevListener() {
  * I am lazy
  */
 async function afterInstall(details: any) {
-  await browser.storage.local.set({
+  await setSettings({
     temporaryInstall: details.temporary
   });
 
   debugFactoryOG.disable();
 
-  if (!debugable) return;
+  if (!debugable) {
+    // yoloth
+    const production = endpoints.find(e => e.name === "Production");
+
+    if (!production)
+      throw new Error(
+        "Production endpoint settings not found! This isn't good!"
+      );
+
+    await setSettings({
+      endpoint: production.endpoint,
+      clientId: production.clientId
+    });
+
+    return;
+  }
 
   await setupDevListener();
 
-  debug("installed", details);
+  debug("installed!", details);
 }
 
 /**
@@ -73,7 +98,7 @@ function extractAcccessToken(redirectUri: string) {
   const m = redirectUri.match(/[#?](.*)/);
   if (!m || m.length < 1) return null;
 
-  debug("m", m);
+  debug("redirect uri matchs", m);
 
   const params = new URLSearchParams(m[1].split("#")[0]);
 
@@ -114,12 +139,36 @@ async function login() {
   debug("oauth done", accessToken);
 }
 
+const mergeTags = (existingTags?: string[], newTags?: string[]) => {
+  const mergedTags = (existingTags || []).concat(newTags || []);
+
+  return take(uniq(flatten(mergedTags)), 200);
+};
+
 // TODO: retype away from any here
-function onMessageHandler(message: any) {
+async function onMessageHandler(message: any) {
+  debug("got message", message);
+
   switch (message.action) {
     case "save": {
+      const { id, ...bookmark } = message.data as Partial<Bookmark>;
+      if (!id) return;
+
       debug("saving in background", message.data);
-      // save(message.data);
+
+      const { tags: existingTags = [] } = await getSettings(["tags"]);
+
+      const bookmarkData = await API.Bookmarks.update(id, bookmark);
+
+      debug(
+        "merging and updating local tag storage",
+        existingTags,
+        bookmarkData.tags
+      );
+      const tags = mergeTags(existingTags, bookmarkData.tags);
+      await setSettings({ tags });
+      debug("tags updated", tags);
+
       break;
     }
 
@@ -129,7 +178,7 @@ function onMessageHandler(message: any) {
     }
 
     default: {
-      debug("unknown message", message);
+      debug("ERROR: unknown message", message);
       break;
     }
   }

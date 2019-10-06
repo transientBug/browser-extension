@@ -1,86 +1,57 @@
 import React from "react";
 
 import tw from "tailwind.macro";
-import styled from "@emotion/styled/macro";
-import { css } from "emotion/macro";
 
-import { Bookmark } from "../../bookmarks";
-import { Creatable as CreatableSelect } from "react-select";
+import Navbar, { NavButton } from "../../components/Navbar";
+import BookmarkEditForm from "../../components/BookmarkEditForm";
+import { SaveIcon, LinkIcon } from "../../components/Icons";
 
-const Form = styled.form`
-  ${tw`mb-6 p-4`}
-`;
+import useStore from "./store";
+import { operations, actions } from "../../ducks/bookmarks";
 
-const Fieldset = styled.fieldset`
-  ${tw`flex flex-col mb-2`}
-`;
+import debugFactory from "../../debug";
+const debug: debug.IDebugger = debugFactory
+  .extend("page")
+  .extend("Popup")
+  .extend("BookmarkEditView");
 
-// const Legend = styled.legend``;
+const Content = tw.div`p-4`;
 
-const Label = styled.label`
-  ${tw`mb-2 uppercase font-bold text-lg text-grey-darkest`}
-`;
+const BookmarkEditView: React.FC = () => {
+  const [{ tags, bookmark }, dispatch] = useStore();
 
-const Input = styled.input`
-  ${tw`appearance-none block w-full bg-white text-gray-700 border border-gray-400 rounded py-2 px-2 mb-2 leading-tight focus:outline-none focus:border-blue-600 focus:border-1`}
-`;
+  if (!bookmark)
+    throw new Error(
+      "Uh oh, that's not good: No bookmark object exists in state, nothing to render"
+    );
 
-type onSave = (bookmark: Partial<Bookmark>) => void;
+  debug("tags & bookmark", { tags, bookmark });
 
-interface BookmarkProps {
-  bookmark: Bookmark;
-  autocompleteTags: string[];
-  onSave: onSave;
-}
-
-const BookmarkEditView: React.FC<BookmarkProps> = ({
-  onSave,
-  autocompleteTags,
-  bookmark
-}) => (
-  <Form
-    onSubmit={(e: React.FormEvent) => {
-      e.preventDefault();
-      console.log(e);
-      onSave({});
-    }}
-  >
-    <Fieldset>
-      <Input
-        type="text"
-        value={bookmark.title}
-        name="title"
-        placeholder="Title"
-        onChage={console.log}
-      />
-    </Fieldset>
-
-    <Fieldset>
-      <CreatableSelect
-        isClearable
-        isMulti
-        name="tags"
-        placeholder="Tags"
-        options={autocompleteTags
-          .concat(bookmark.tags || [])
-          .map(item => ({ label: item, value: item }))}
-        onChange={console.log}
-        styles={{
-          placeholder: base => ({ ...base, color: "#a8adb6" })
+  return (
+    <>
+      <Navbar>
+        {{
+          right: (
+            <>
+              <NavButton onClick={() => dispatch(operations.update())}>
+                <SaveIcon />
+              </NavButton>
+              <NavButton onClick={() => dispatch(operations.open())}>
+                <LinkIcon />
+              </NavButton>
+            </>
+          )
         }}
-      />
-    </Fieldset>
-    <Fieldset>
-      <textarea
-        placeholder="Description"
-        rows={10}
-        className={css`
-          ${tw`appearance-none block w-full h-full bg-white text-gray-700 border border-gray-400 rounded py-2 px-2 mb-2 leading-tight focus:outline-none focus:border-blue-600 focus:border-1`}
-        `}
-        value={bookmark.description}
-      />
-    </Fieldset>
-  </Form>
-);
+      </Navbar>
+      <Content>
+        <BookmarkEditForm
+          autocompleteTags={tags}
+          bookmark={bookmark}
+          onUpdate={bookmark => dispatch(actions.setBookmark(bookmark))}
+        />
+      </Content>
+    </>
+  );
+};
 
 export default BookmarkEditView;
